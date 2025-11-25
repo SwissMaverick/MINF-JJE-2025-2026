@@ -1,2 +1,0 @@
-Cette mesure montre la durée totale d'un chanillard. Étant donné que les changements de LEDs sont à des intervalles de 200ms et qu'il y en a 8, le temps attendu serait de 1,6s pour l'ensemble.
-Le temps mesuré est de 1.6s, ce qui correspond à nos attentes.
