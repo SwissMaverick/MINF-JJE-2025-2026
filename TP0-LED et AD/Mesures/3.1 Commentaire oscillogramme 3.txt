@@ -1,0 +1,1 @@
+Cette mesure montre le délai de 3 secondes en début de programme. Il est intéressant de noter qu'il est compliqué de voir la fin de ce délai en regardant uniquement le signal de la LED0. Puisque celle-ci s'éteint puis se rallume directement. Le signal de celle-ci paraît durer plus longtemps que les autres.
