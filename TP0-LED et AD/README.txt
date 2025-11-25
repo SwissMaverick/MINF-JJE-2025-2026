@@ -7,4 +7,4 @@ Pour arriver à 10Hz, il faut rediviser par 31'250. On prendra donc un compteur 
 Cette valeur est expliquée par le fait que le compteur commence par 0.
 Le passage par le pescaler puis par le compteur provoque une interruption toutes les 100ms.
 
-Mesure 1 :
+Les mesures ainsi que leur commentaires se trouvent dans le dossier du même nom
