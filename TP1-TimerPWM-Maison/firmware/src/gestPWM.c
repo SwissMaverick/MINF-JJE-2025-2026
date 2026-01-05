@@ -109,7 +109,7 @@ void GPWM_GetSettings(S_pwmSettings *pData)
 
 // Affichage des information en exploitant la structure
 void GPWM_DispSettings(S_pwmSettings *pData)
-{
+{    
     lcd_gotoxy(1,1);
     printf_lcd("TP1 PWM 2025-2026");
     

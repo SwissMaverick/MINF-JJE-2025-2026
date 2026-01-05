@@ -5,6 +5,7 @@
         <group>
             <file>file:/C:/microchip/harmony/v2_06/apps/MINF/TP/TP1-TimerPWM-Maison/firmware/src/app.h</file>
             <file>file:/C:/microchip/harmony/v2_06/apps/MINF/TP/TP1-TimerPWM-Maison/firmware/src/gestPWM.c</file>
+            <file>file:/C:/microchip/harmony/v2_06/apps/MINF/TP/TP1-TimerPWM-Maison/firmware/src/Fonctions.h</file>
             <file>file:/C:/microchip/harmony/v2_06/apps/MINF/TP/TP1-TimerPWM-Maison/firmware/src/Fonctions.c</file>
             <file>file:/C:/microchip/harmony/v2_06/apps/MINF/TP/TP1-TimerPWM-Maison/firmware/src/system_config/default/system_interrupt.c</file>
             <file>file:/C:/microchip/harmony/v2_06/apps/MINF/TP/TP1-TimerPWM-Maison/firmware/src/app.c</file>
