@@ -83,11 +83,11 @@ void GPWM_GetSettings(S_pwmSettings *pData)
     
     if (moyenneCanal_0 >= 99) 
     {
-        PWMData.absSpeed = PWMData.SpeedSetting; // Vitesse positive
+        PWMData.absSpeed = PWMData.SpeedSetting;
     } 
     else 
     {
-        PWMData.absSpeed = abs(PWMData.SpeedSetting); // Vitesse négative
+        PWMData.absSpeed = abs(PWMData.SpeedSetting);
     }
     
     //Canal 1
@@ -166,7 +166,24 @@ void GPWM_ExecPWM(S_pwmSettings *pData)
 // Execution PWM software
 void GPWM_ExecPWMSoft(S_pwmSettings *pData)
 {
-    
+    uint8_t compteur = 0;
+            
+    if(compteur == 100)
+    {
+        compteur = 0;
+    }
+    else
+    {
+        if(compteur < PWMData.absSpeed)
+        {
+            BSP_LEDOn(BSP_LED_2);
+        }
+        else
+        {
+            BSP_LEDOff(BSP_LED_2);
+        }
+        compteur ++;
+    }
 }
 
 

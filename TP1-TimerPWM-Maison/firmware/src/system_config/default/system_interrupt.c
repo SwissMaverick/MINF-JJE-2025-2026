@@ -74,6 +74,8 @@ S_pwmSettings PWMData;
 
 void __ISR(_TIMER_1_VECTOR, ipl4AUTO) IntHandlerDrvTmrInstance0(void)
 {
+    BSP_LEDOn(BSP_LED_0);
+    
     PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_1);
       
     static uint8_t compteur = 0;
@@ -90,6 +92,8 @@ void __ISR(_TIMER_1_VECTOR, ipl4AUTO) IntHandlerDrvTmrInstance0(void)
     {
         compteur++;
     }
+    
+    BSP_LEDOff(BSP_LED_0);
 }
 void __ISR(_TIMER_2_VECTOR, ipl1AUTO) IntHandlerDrvTmrInstance1(void)
 {
@@ -101,7 +105,11 @@ void __ISR(_TIMER_3_VECTOR, ipl1AUTO) IntHandlerDrvTmrInstance2(void)
 }
 void __ISR(_TIMER_4_VECTOR, ipl4AUTO) IntHandlerDrvTmrInstance3(void)
 {
+    BSP_LEDOn(BSP_LED_1);
+    
     PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_4);
+    
+    BSP_LEDOff(BSP_LED_1);
 }
  
 /*******************************************************************************
