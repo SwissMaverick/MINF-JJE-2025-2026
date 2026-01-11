@@ -29,10 +29,10 @@ APP_DATA appData;
 void GPWM_Initialize(S_pwmSettings *pData)
 {
    // Init les data 
-    PWMData.absSpeed = 0;
-    PWMData.absAngle = 0;
-    PWMData.SpeedSetting = 0;
-    PWMData.AngleSetting = 0;
+    PWMData.absSpeed = ZERO;
+    PWMData.absAngle = ZERO;
+    PWMData.SpeedSetting = ZERO;
+    PWMData.AngleSetting = ZERO;
     
    // Init état du pont en H
    BSP_EnableHbrige();
@@ -52,15 +52,15 @@ void GPWM_GetSettings(S_pwmSettings *pData)
 {
     // Variables canal 0
     static uint16_t valeursCanal_0[10];
-    static uint8_t pointeurCanal_0 = 0;
-    static uint16_t sommeCanal_0 = 0;
-    static uint16_t derniereValeurCanal_0 = 0;
+    static uint8_t pointeurCanal_0 = ZERO;
+    static uint16_t sommeCanal_0 = ZERO;
+    static uint16_t derniereValeurCanal_0 = ZERO;
     
     // Variables canal 1
     static uint16_t valeursCanal_1[10];
-    static uint8_t pointeurCanal_1 = 0;
-    static uint16_t sommeCanal_1 = 0;
-    static uint16_t derniereValeurCanal_1 = 0;
+    static uint8_t pointeurCanal_1 = ZERO;
+    static uint16_t sommeCanal_1 = ZERO;
+    static uint16_t derniereValeurCanal_1 = ZERO;
     
     // Lecture du convertisseur AD
     appData.AdcRes = BSP_ReadAllADC();
@@ -166,7 +166,7 @@ void GPWM_ExecPWM(S_pwmSettings *pData)
 // Execution PWM software
 void GPWM_ExecPWMSoft(S_pwmSettings *pData)
 {
-    uint8_t compteur = 0;
+    static uint8_t compteur = 0;
             
     if(compteur == 100)
     {

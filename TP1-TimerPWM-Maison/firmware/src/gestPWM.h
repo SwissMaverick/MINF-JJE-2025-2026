@@ -17,7 +17,8 @@
 
 #include <stdint.h>
 
-
+/*Constantes*/
+#define ZERO 0
 
 /*--------------------------------------------------------*/
 // Définition des fonctions prototypes
