@@ -55,12 +55,14 @@ void GPWM_GetSettings(S_pwmSettings *pData)
     static uint8_t pointeurCanal_0 = ZERO;
     static uint16_t sommeCanal_0 = ZERO;
     static uint16_t derniereValeurCanal_0 = ZERO;
+    uint16_t moyenneCanal_0 = ZERO;
     
     // Variables canal 1
     static uint16_t valeursCanal_1[10];
     static uint8_t pointeurCanal_1 = ZERO;
     static uint16_t sommeCanal_1 = ZERO;
     static uint16_t derniereValeurCanal_1 = ZERO;
+    uint16_t moyenneCanal_1 = ZERO;
     
     // Lecture du convertisseur AD
     appData.AdcRes = BSP_ReadAllADC();
@@ -73,7 +75,7 @@ void GPWM_GetSettings(S_pwmSettings *pData)
     sommeCanal_0 += valeursCanal_0[pointeurCanal_0];
     pointeurCanal_0 = (pointeurCanal_0 + 1) % 10;
     //Faire une moyenne de ces 10 variables
-    uint16_t moyenneCanal_0 = sommeCanal_0 / 10;
+    moyenneCanal_0 = sommeCanal_0 / 10;
     
     //Obtention de la vitesse absolue avec une règle de trois (0 à 198)
     PWMData.absSpeed = (moyenneCanal_0 * 198) / 1023;
@@ -81,12 +83,14 @@ void GPWM_GetSettings(S_pwmSettings *pData)
     //Calcul pour obtenir la valeur de vitesse signée (-99 à 99)
     PWMData.SpeedSetting = PWMData.absSpeed - 99;
     
-    if (moyenneCanal_0 >= 99) 
+    if (PWMData.absSpeed >= 99) 
     {
+        // Partie positive (0 à +99)
         PWMData.absSpeed = PWMData.SpeedSetting;
     } 
     else 
     {
+        // Partie négative (-99 à 0) transformée en positif (99 à 0)
         PWMData.absSpeed = abs(PWMData.SpeedSetting);
     }
     
@@ -98,7 +102,7 @@ void GPWM_GetSettings(S_pwmSettings *pData)
     sommeCanal_1 += valeursCanal_1[pointeurCanal_1];
     pointeurCanal_1 = (pointeurCanal_1 + 1) % 10;
     //Faire une moyenne de ces 10 variables
-    uint16_t moyenneCanal_1 = sommeCanal_1 / 10;
+    moyenneCanal_1 = sommeCanal_1 / 10;
     
     //Obtention de l'angle absolu avec une règle de trois (0 à 180)
     PWMData.absAngle = (moyenneCanal_1 * 180) / 1023;
@@ -157,10 +161,24 @@ void GPWM_ExecPWM(S_pwmSettings *pData)
     }
     
     // Calcul de la valeur du nombre d'impulsions pour OC2 (à partir de absSpeed)
-    PLIB_OC_PulseWidth16BitSet(OC_ID_2, ((PWMData.absSpeed * 1023) / 99)*2);
+    // Calcul :
+    // Période Timer 2 (1999) + 1 = 2000 Ticks Max.
+    // Variable "PWMData.absSpeed" va de 0 à 99.
+    // Règle de trois : (ValeurVitesse * MaxTicks) / MaxVitesse
+    // On utilise uint32_t pour la multiplication (99 * 2000 = 198000) pour éviter l'overflow 16-bit
+    uint32_t ticksLongueurImpulsion_0;
+    ticksLongueurImpulsion_0 = ((uint32_t)PWMData.absSpeed * 2000) / 99;
+    PLIB_OC_PulseWidth16BitSet(OC_ID_2, (uint16_t)ticksLongueurImpulsion_0);
     
     // Calcul de la valeur du nombre d'impulsions pour OC3 (à partir de absAngle)
-    PLIB_OC_PulseWidth16BitSet(OC_ID_3, ((PWMData.absAngle + 90) * 1023 / 180)*2);
+    // Calcul : 
+    // Timer 3 période 7ms = 35000 ticks -> 1 tick = 0.2us
+    // 0 degrés   = 0.6 ms = 3000 ticks (C'est notre Offset)
+    // 180 degrés = 2.4 ms = 12000 ticks
+    // Différence = 9000 ticks répartis sur 180 degrés -> 50 ticks par degré.
+    uint32_t ticksLongueurImpulsion_1;
+    ticksLongueurImpulsion_1 = 3000 + (PWMData.absAngle * 50);
+    PLIB_OC_PulseWidth16BitSet(OC_ID_3, (uint16_t)ticksLongueurImpulsion_1);
 }
 
 // Execution PWM software
