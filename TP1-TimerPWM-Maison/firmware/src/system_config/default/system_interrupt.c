@@ -101,6 +101,8 @@ void __ISR(_TIMER_4_VECTOR, ipl4AUTO) IntHandlerDrvTmrInstance3(void)
     
     PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_4);
     
+    GPWM_ExecPWMSoft(&PWMData);
+    
     BSP_LEDOff(BSP_LED_1);
 }
  

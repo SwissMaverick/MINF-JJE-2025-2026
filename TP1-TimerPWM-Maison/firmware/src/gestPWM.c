@@ -73,7 +73,14 @@ void GPWM_GetSettings(S_pwmSettings *pData)
     sommeCanal_0 -= valeursCanal_0[pointeurCanal_0];
     valeursCanal_0[pointeurCanal_0] = derniereValeurCanal_0;
     sommeCanal_0 += valeursCanal_0[pointeurCanal_0];
-    pointeurCanal_0 = (pointeurCanal_0 + 1) % 10;
+    
+    //Gestion du pointeur du tableau
+    pointeurCanal_0++;
+    if(pointeurCanal_0 >= 10)
+    {
+        pointeurCanal_0 = ZERO;
+    }
+    
     //Faire une moyenne de ces 10 variables
     moyenneCanal_0 = sommeCanal_0 / 10;
     
@@ -100,7 +107,13 @@ void GPWM_GetSettings(S_pwmSettings *pData)
     sommeCanal_1 -= valeursCanal_1[pointeurCanal_1];
     valeursCanal_1[pointeurCanal_1] = derniereValeurCanal_1;
     sommeCanal_1 += valeursCanal_1[pointeurCanal_1];
-    pointeurCanal_1 = (pointeurCanal_1 + 1) % 10;
+    
+    //Gestion du pointeur du tableau
+    pointeurCanal_1++;
+    if(pointeurCanal_1 >= 10)
+    {
+        pointeurCanal_1 = ZERO;
+    }
     //Faire une moyenne de ces 10 variables
     moyenneCanal_1 = sommeCanal_1 / 10;
     
@@ -131,11 +144,13 @@ void GPWM_DispSettings(S_pwmSettings *pData)
 // Execution PWM et gestion moteur à partir des info dans structure
 void GPWM_ExecPWM(S_pwmSettings *pData)
 {
+    //STBY = High
+    STBY_HBRIDGE_W = 1;
+    
     //Gestion du pont en H
     if(PWMData.SpeedSetting < 0)//Counter clockwise
     {
-        //STBY = High
-        STBY_HBRIDGE_W = 1;
+        
         //IN1 = Low, OUT2 = High
         AIN1_HBRIDGE_W = 0;
         AIN2_HBRIDGE_W = 1;
@@ -143,8 +158,6 @@ void GPWM_ExecPWM(S_pwmSettings *pData)
     }
     else if(PWMData.SpeedSetting > 0)//Clockwise
     {
-        //STBY = High
-        STBY_HBRIDGE_W = 1;
         //IN1 = High, OUT2 = Low
         AIN1_HBRIDGE_W = 1;
         AIN2_HBRIDGE_W = 0;
@@ -152,8 +165,6 @@ void GPWM_ExecPWM(S_pwmSettings *pData)
     }
     else
     {
-        //STBY = High
-        STBY_HBRIDGE_W = 1;
         //IN1 = High, IN2 = High
         AIN1_HBRIDGE_W = 1;
         AIN2_HBRIDGE_W = 1;
@@ -165,7 +176,7 @@ void GPWM_ExecPWM(S_pwmSettings *pData)
     // Période Timer 2 (1999) + 1 = 2000 Ticks Max.
     // Variable "PWMData.absSpeed" va de 0 à 99.
     // Règle de trois : (ValeurVitesse * MaxTicks) / MaxVitesse
-    // On utilise uint32_t pour la multiplication (99 * 2000 = 198000) pour éviter l'overflow 16-bit
+    // On utilise un cast uint32_t pour la multiplication (99 * 2000 = 198000) pour éviter l'overflow 16-bit
     uint32_t ticksLongueurImpulsion_0;
     ticksLongueurImpulsion_0 = ((uint32_t)PWMData.absSpeed * 2000) / 99;
     PLIB_OC_PulseWidth16BitSet(OC_ID_2, (uint16_t)ticksLongueurImpulsion_0);
@@ -173,7 +184,7 @@ void GPWM_ExecPWM(S_pwmSettings *pData)
     // Calcul de la valeur du nombre d'impulsions pour OC3 (à partir de absAngle)
     // Calcul : 
     // Timer 3 période 7ms = 35000 ticks -> 1 tick = 0.2us
-    // 0 degrés   = 0.6 ms = 3000 ticks (C'est notre Offset)
+    // 0 degrés   = 0.6 ms = 3000 ticks (Valeur minimum)
     // 180 degrés = 2.4 ms = 12000 ticks
     // Différence = 9000 ticks répartis sur 180 degrés -> 50 ticks par degré.
     uint32_t ticksLongueurImpulsion_1;
@@ -185,22 +196,21 @@ void GPWM_ExecPWM(S_pwmSettings *pData)
 void GPWM_ExecPWMSoft(S_pwmSettings *pData)
 {
     static uint8_t compteur = 0;
-            
-    if(compteur == 100)
+    
+    compteur ++;
+    
+    if(compteur >= 100)
     {
         compteur = 0;
     }
+    
+    if(compteur < PWMData.absSpeed)
+    {
+        BSP_LEDOn(BSP_LED_2);
+    }
     else
     {
-        if(compteur < PWMData.absSpeed)
-        {
-            BSP_LEDOn(BSP_LED_2);
-        }
-        else
-        {
-            BSP_LEDOff(BSP_LED_2);
-        }
-        compteur ++;
+        BSP_LEDOff(BSP_LED_2);
     }
 }
 
