@@ -65,7 +65,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // Section: Global Data Definitions
 // *****************************************************************************
 // *****************************************************************************
-
+S_pwmSettings pData; 
 // *****************************************************************************
 /* Application Data
 
@@ -239,10 +239,17 @@ void APP_Tasks ( void )
         
         case APP_STATE_SERVICE_TASKS:
         {
-             /*Envoie des datas dans la fonction pour obtenir la vitesse et l'angle*/
+            /*Déclaration de la variable servant à savoir si on est
+            * connecter à l'autre carte*/
+            static bool CommStatus = false;
+            /*Reception du paramètre Remote*/
+            CommStatus = GetMessage();
+            
+            
+            /*Envoie des datas dans la fonction pour obtenir la vitesse et l'angle*/
             GPWM_GetSettings(&pData);
             /*Envoie des datas dans la fonction de l'affichage*/
-            GPWM_DispSettings(&pData);
+            GPWM_DispSettings(&pData, );
             /*Envoie des datas dans la fonction d'execution du PWM et de la gestion du moteur*/
             GPWM_ExecPWM(&pData);
             
