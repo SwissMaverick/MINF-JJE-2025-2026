@@ -176,11 +176,13 @@ void GPWM_DispSettings(S_pwmSettings *pData, bool Remote)
     //Affichage Remote ou local
     if(Remote == true)
     {
+        lcd_ClearLine(1);
         lcd_gotoxy(1,1);
         printf_lcd("Remote Settings");
     }
     else
     {
+        lcd_ClearLine(1);
         lcd_gotoxy(1,1);
         printf_lcd("Local  Settings");
     }

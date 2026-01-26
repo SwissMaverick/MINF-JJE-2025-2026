@@ -4,10 +4,6 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/microchip/harmony/v2_06/apps/MINF/TP/TP2_PWM_RS232/firmware/src/Mc32gest_RS232.c</file>
-            <file>file:/C:/microchip/harmony/v2_06/apps/MINF/TP/TP2_PWM_RS232/firmware/src/gestPWM.c</file>
-            <file>file:/C:/microchip/harmony/v2_06/apps/MINF/TP/TP2_PWM_RS232/firmware/src/gestPWM.h</file>
-            <file>file:/C:/microchip/harmony/v2_06/apps/MINF/TP/TP2_PWM_RS232/firmware/src/app.c</file>
-            <file>file:/C:/microchip/harmony/v2_06/bsp/pic32mx_skes/Mc32DriverAdc.c</file>
         </group>
     </open-files>
 </project-private>

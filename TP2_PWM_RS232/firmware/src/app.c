@@ -67,7 +67,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // Section: Global Data Definitions
 // *****************************************************************************
 // *****************************************************************************
+APP_DATA appData;
 S_pwmSettings pData; 
+S_pwmSettings pDataToSend;
 // *****************************************************************************
 /* Application Data
 

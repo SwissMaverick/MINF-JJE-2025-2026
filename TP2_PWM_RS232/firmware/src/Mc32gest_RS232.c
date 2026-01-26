@@ -124,7 +124,7 @@ void SendMessage(S_pwmSettings *pData)
         uint8_t valCRC_Byte_2; //Byte LBS (envoyé en dernier)
         
         valCRC_Byte_1 = (uint8_t)(valCRC16 >> 8);
-        valCRC_Byte_2 = (uint8_t)(valCRC16 & 0x00FF);
+        valCRC_Byte_2 = (uint8_t)(valCRC16 & 0xFF);
         
         // Compose le message (MsbCrc)
         TxMess.MsbCrc = valCRC_Byte_1;
@@ -271,7 +271,3 @@ void SendMessage(S_pwmSettings *pData)
     // Marque fin interruption avec Led3
     LED3_W = 0;
  }
-
-
-
-
