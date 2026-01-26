@@ -67,7 +67,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // Section: Global Data Definitions
 // *****************************************************************************
 // *****************************************************************************
-APP_DATA appData;
 S_pwmSettings pData; 
 S_pwmSettings pDataToSend;
 // *****************************************************************************
@@ -247,7 +246,7 @@ void APP_Tasks ( void )
             * connecter à l'autre carte*/
             static bool CommStatus = false;
             /*Reception du paramètre Remote*/
-            CommStatus = GetMessage(&PWMData);
+            CommStatus = GetMessage(&pData);
             if(CommStatus == false)
             {
                 /*Gestion du code en local (Comme sur le TP1)*/
@@ -261,7 +260,7 @@ void APP_Tasks ( void )
                 GPWM_GetSettings(&pDataToSend);
             }
             //Affichage
-            GPWM_DispSettings(&PWMData, CommStatus);
+            GPWM_DispSettings(&pData, CommStatus);
             
             //Execution PWM et gestion moteur
             GPWM_ExecPWM(&pData);

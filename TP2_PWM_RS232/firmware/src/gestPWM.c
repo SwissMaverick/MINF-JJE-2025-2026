@@ -176,19 +176,15 @@ void GPWM_DispSettings(S_pwmSettings *pData, bool Remote)
     //Affichage Remote ou local
     if(Remote == true)
     {
-        lcd_ClearLine(1);
         lcd_gotoxy(1,1);
-        printf_lcd("Remote Settings");
+        printf_lcd("Remote Settings     ");
     }
     else
     {
-        lcd_ClearLine(1);
         lcd_gotoxy(1,1);
-        printf_lcd("Local  Settings");
+        printf_lcd("Local Settings      ");
     }
 }
-
-
 
 // Execution PWM et gestion moteur à partir des info dans structure
 void GPWM_ExecPWM(S_pwmSettings *pData)

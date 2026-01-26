@@ -108,23 +108,23 @@ void SendMessage(S_pwmSettings *pData)
         TxMess.Start = 0xAA;
                 
         // Compose le message (Speed)
-        TxMess.Speed = PWMData.SpeedSetting;
+        TxMess.Speed = pData->SpeedSetting;
                 
         // Compose le message (Angle)
-        TxMess.Angle = PWMData.AngleSetting;
+        TxMess.Angle = pData->AngleSetting;
         
-        //Calcul CRC (ébauche)
+        //Calcul CRC
         uint16_t valCRC16 = 0xFFFF;
         valCRC16 = updateCRC16(valCRC16, 0xAA);
-        valCRC16 = updateCRC16(valCRC16, PWMData.SpeedSetting);
-        valCRC16 = updateCRC16(valCRC16, PWMData.AngleSetting);
+        valCRC16 = updateCRC16(valCRC16, pData->SpeedSetting);
+        valCRC16 = updateCRC16(valCRC16, pData->AngleSetting);
         
         //Séparation de ValCrc16 en 2 bytes
         uint8_t valCRC_Byte_1; //Byte MSB (envoyé en premier)
         uint8_t valCRC_Byte_2; //Byte LBS (envoyé en dernier)
         
         valCRC_Byte_1 = (uint8_t)(valCRC16 >> 8);
-        valCRC_Byte_2 = (uint8_t)(valCRC16 & 0xFF);
+        valCRC_Byte_2 = (uint8_t)(valCRC16 & 0x00FF);
         
         // Compose le message (MsbCrc)
         TxMess.MsbCrc = valCRC_Byte_1;
@@ -139,9 +139,9 @@ void SendMessage(S_pwmSettings *pData)
         // Dépose le message dans le FIFO (Angle)
         PutCharInFifo(&descrFifoTX, TxMess.Angle);
         // Dépose le message dans le FIFO (LSBCRC)
-        PutCharInFifo(&descrFifoTX, TxMess.LsbCrc);
-        // Dépose le message dans le FIFO (MSBCRC)
         PutCharInFifo(&descrFifoTX, TxMess.MsbCrc);
+        // Dépose le message dans le FIFO (MSBCRC)
+        PutCharInFifo(&descrFifoTX, TxMess.LsbCrc);
         
     }
     
