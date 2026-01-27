@@ -26,6 +26,13 @@
 void InitFifoComm(void);
 bool GetMessage(S_pwmSettings *pData);
 void SendMessage(S_pwmSettings *pData);
+bool VerifierVitesse(int8_t valVitesse);
+bool VerifierAngle(int8_t valAngle);
+
+// Constantes
+#define ANGLE_MAX 90
+#define VITESSE_MAX 99
+#define AA 0xAA
 
 // Descripteur des fifos
 extern S_fifo descrFifoRX;

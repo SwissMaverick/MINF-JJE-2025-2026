@@ -72,18 +72,143 @@ void InitFifoComm(void)
    
 } // InitComm
 
- 
+//Verif Vitesse
+bool VerifierVitesse(int8_t valVitesse)
+{
+    uint8_t valAbsAngle = 0;
+    bool valToReturn = false;
+    valAbsAngle = abs(valVitesse);
+    if(valAbsAngle > VITESSE_MAX)
+    {
+        valToReturn = false;
+    }
+    else
+    {
+        valToReturn = true;
+    }
+    return valToReturn;
+}
+
+//Verif Angle 
+bool VerifierAngle(int8_t valAngle)
+{
+    uint8_t valAbsAngle = 0;
+    int8_t valAngleLocal = 0;
+    bool valToReturn = false;
+    valAngleLocal = valAngle;
+    valAbsAngle = abs(valAngleLocal);
+    if(valAbsAngle > ANGLE_MAX)
+    {
+        valToReturn = false;
+    }
+    else
+    {
+        valToReturn = true;
+    }
+    return valToReturn;
+} 
+
 // Valeur de retour false = pas de message reçu donc local (data non modifié)
 // Valeur de retour true = message reçu donc en remote (data mis à jour)
 bool GetMessage(S_pwmSettings *pData)
 {
     bool commStatus = false;
-    
+    bool verifVitesse = false, verifAngle = false;
+    uint8_t nbChartoRead = 0;
+    static uint8_t erreur = 0;
+    uint32_t verifCRC = 0xFFFF;
+    U_manip16 CRC;
     // Traitement de réception à introduire ICI
     // Lecture et décodage fifo réception
-    // ...
+    /*On regarde le nombre de caractères à lire dans la FIFO*/
+    nbChartoRead = GetReadSize(&descrFifoRX);
+    /*Si le nombre de caractère à lire est plus grand ou 
+     *égal à 5.*/
+    if(nbChartoRead >= MESS_SIZE)
+    {
+        /*Récupération du caractère de début du message*/
+        GetCharFromFifo(&descrFifoRX, &RxMess.Start);
+        /*Vérification si le caractère de début du message est le bon*/
+        if(RxMess.Start == AA)
+        {
+            /*Récupération des caractères de vitesse, angle et 
+             *du CRC (MSB puis LSB)*/
+            GetCharFromFifo(&descrFifoRX, &RxMess.Speed);
+            GetCharFromFifo(&descrFifoRX, &RxMess.Angle);
+            GetCharFromFifo(&descrFifoRX, &RxMess.MsbCrc);
+            GetCharFromFifo(&descrFifoRX, &RxMess.LsbCrc);
+            
+            /*Calcul de la valeur du CRC*/
+            CRC.shl.lsb = RxMess.LsbCrc;
+            CRC.shl.msb = RxMess.MsbCrc;
+            
+            /*Calcul du CRC avec les valeurs les valeurs Start, Vitesse
+             et Angle*/
+            verifCRC = updateCRC16(verifCRC, RxMess.Start);
+            verifCRC = updateCRC16(verifCRC, RxMess.Speed);
+            verifCRC = updateCRC16(verifCRC, RxMess.Angle);
+            
+            /*Si la valeur du CRC calculer est la même que celle du CRC reçu*/
+            if(verifCRC == CRC.val)
+            {
+                LED6_W = 1;
+                /*Vérification que la valeur de la vitesse ne 
+                 *dépasse pas -99 ou +99*/
+                verifVitesse = VerifierVitesse(RxMess.Speed);
+                /*Vérification que la valeur de l'angle ne 
+                 *dépasse pas -90 ou +90*/
+                verifAngle = VerifierAngle(RxMess.Angle);
+                
+                /*Si les vérifications des valeurs Vitesse et Angle sont bons*/
+                if((verifVitesse == true) && (verifAngle == true))
+                {
+                    /*Mise à jour du paramètre de la vitesse*/
+                    pData->SpeedSetting = RxMess.Speed;
+                    /*Calcul de la valeur absolue de la vitesse,
+                     *mise à jour du paramètre de la vitesse en valeur absolue*/
+                    pData->absSpeed = abs(RxMess.Speed);
+                    /*Mise à jour du paramètre de l'angle*/
+                    pData->AngleSetting = RxMess.Angle;
+                    /*Calcul de la valeur absolue de l'angle,
+                     *mise à jour du paramètre de l'angle en valeur absolue*/
+                    pData->absAngle = abs(RxMess.Angle);
+                    /*Remise à 0 du compteur d'erreur*/
+                    erreur = 0;
+                }
+                else
+                {
+                    erreur ++;
+                }
+            }
+            else
+            {
+                LED6_W = 0;
+                erreur ++;
+            }
+        }
+        else
+        {
+            erreur ++;
+        }
+    }
+    else
+    {
+        erreur ++;
+    }
     
-    
+    if(erreur >= 10)
+    {
+        commStatus = false;
+        if(erreur > 20)
+        {
+            erreur = 10;
+        }
+    }
+    else
+    {
+        commStatus = true;
+    }
+
     // Gestion controle de flux de la réception
     if(GetWriteSpace ( &descrFifoRX) >= (2*MESS_SIZE)) {
         // autorise émission par l'autre
@@ -91,7 +216,6 @@ bool GetMessage(S_pwmSettings *pData)
     }
     return commStatus;
 } // GetMessage
-
 
 // Fonction d'envoi des messages, appel cyclique
 void SendMessage(S_pwmSettings *pData)

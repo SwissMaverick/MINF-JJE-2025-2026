@@ -214,6 +214,14 @@ void APP_Tasks ( void )
                 //APP_Initialize();
                 /*Eteindre toutes les LEDs*/
                 AllLedsOff();
+                LED0_W = 1;
+                LED1_W = 1;
+                LED2_W = 1;
+                LED3_W = 1;
+                LED4_W = 1;
+                LED5_W = 1;
+                LED6_W = 1;
+                LED7_W = 1;
                 /*Aller sur la colonne 1 à la ligne 1*/
                 lcd_gotoxy(1,1);
                 /*Afficher Tp1 PWM et AD <2026> sur le LCD*/
@@ -244,7 +252,8 @@ void APP_Tasks ( void )
         {
             /*Déclaration de la variable servant à savoir si on est
             * connecter à l'autre carte*/
-            static bool CommStatus = false;
+            bool CommStatus = false;
+            static uint8_t sendCounter  = 0;
             /*Reception du paramètre Remote*/
             CommStatus = GetMessage(&pData);
             if(CommStatus == false)
@@ -265,19 +274,27 @@ void APP_Tasks ( void )
             //Execution PWM et gestion moteur
             GPWM_ExecPWM(&pData);
             
-            //Envoi valeurs
-            if(CommStatus == false)
+            if(sendCounter == 5)
             {
-                //Gestion du code en local (Comme sur le TP1)
-                //Appel de la fonction SendMessage
-                SendMessage(&pData);
+                //Envoi valeurs
+                if(CommStatus == false)
+                {
+                    //Gestion du code en local (Comme sur le TP1)
+                    //Appel de la fonction SendMessage
+                    SendMessage(&pData);
+                }
+                else
+                {
+                    /*Gestion du code en Remote*/
+                    /*Appel de la fonction SendMessage*/
+                    SendMessage(&pDataToSend);
+                }
             }
             else
             {
-                /*Gestion du code en Remote*/
-                /*Appel de la fonction SendMessage*/
-                SendMessage(&pDataToSend);
+                sendCounter++;
             }
+            
             
             /*mise à jour de l'état*/
             APP_UpdateState(APP_STATE_WAIT);
