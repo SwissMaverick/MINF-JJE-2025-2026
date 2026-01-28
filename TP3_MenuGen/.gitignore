@@ -1,0 +1,7 @@
+# dossier à ne pas tenir compte 
+/firmware/TP2_PWMRS232.X/build
+/firmware/TP2_PWMRS232.X/debug
+/firmware/TP2_PWMRS232.X/dist
+/firmware/TP2_PWMRS232.X/queuelogs
+/firmware/TP2_PWMRS232.X/*.inx
+/firmware/TP2_PWMRS232.X/*.log
