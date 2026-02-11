@@ -27,6 +27,9 @@
 
 #include "GesPec12.h"
 #include "Mc32Debounce.h"
+#include "Mc32DriverLcd.h"
+#include "Mc32gestSpiDac.h"
+#include "app.h"
 
 // Descripteur des sinaux
 S_SwitchDescriptor DescrA;
@@ -69,20 +72,122 @@ S_Pec12_Descriptor Pec12;
 
 void ScanPec12 (bool ValA, bool ValB, bool ValPB)
 {
-   // Traitement antirebond sur A, B et PB
+    uint8_t B_Pressed;
+    uint8_t B_Released;
+    uint8_t A;
+    static uint8_t A_Old;
+    uint8_t Val_PB;
+    static uint8_t Val_PB_Old;
+    uint16_t PushButtonCounter;
+    uint16_t ActivityCounter;
+    
+   /* Traitement antirebond sur A, B et PB */
    DoDebounce (&DescrA, ValA);
    DoDebounce (&DescrB, ValB);
    DoDebounce (&DescrPB, ValPB);
    
-   // Détection incrément / décrément
-  
+   B_Pressed = DebounceIsPressed(&DescrB);
+   DebounceClearPressed(&DescrB);
+   B_Released = DebounceIsReleased(&DescrB);
+   DebounceClearReleased(&DescrB);
+   Val_PB = DebounceGetInput(&DescrPB);
+   A = DebounceGetInput(&DescrA);
+   
+   /* Détection incrément / décrément */
+   if(B_Pressed == 1)
+   {
+       if(A == 0)
+       {
+           //CW = 1
+           Pec12.Inc = 1;
+           //CCW = 0
+           Pec12.Dec = 0;
+           
+           BSP_LEDToggle(BSP_LED_4);
+       }
+       else
+       {
+           //CCW = 1
+           Pec12.Dec = 1;
+           //CW = 0
+           Pec12.Inc = 0;
+           
+           BSP_LEDToggle(BSP_LED_5);
+       }
+   }
+   if(B_Released == 1)
+   {
+       if(A == 0)
+       {
+           //CCW = 1
+           Pec12.Dec = 1;
+           //CW = 0
+           Pec12.Inc = 0;
+           
+           BSP_LEDToggle(BSP_LED_5);
+       }
+       else
+       {
+           //CW = 1
+           Pec12.Inc = 1;
+           //CCW = 0
+           Pec12.Dec = 0;
+           
+           BSP_LEDToggle(BSP_LED_4);
+       }
+   }
+   else
+   {
+       //rien
+   }
    
     
-   // Traitement du PushButton
+   /* Traitement du PushButton */
+   /* Mise en place d'un compteur pour savoir combien de temps le bouton reste pressé */
+   //La valeur du compteur reste en revanche à revoir
+   if(Val_PB = 1)
+   {
+       Pec12.PressDuration ++;
+   }
+   else
+   {
+       if(Val_PB == Val_PB_Old)
+       {
+           Pec12.PressDuration = 0;
+       }
+   }
    
+   if(Pec12.PressDuration < 500)
+   {
+       Pec12.OK = 1;
+       Pec12.ESC = 0;
+       BSP_LEDToggle(BSP_LED_7);
+   }
+   else
+   {
+       if(Pec12.PressDuration >= 500)
+       {
+           Pec12.ESC = 1;
+           Pec12.OK = 0;
+           BSP_LEDToggle(BSP_LED_6);
+       }
+   }
+   A_Old = A;
+   Val_PB_Old = Val_PB;
    
-   // Gestion inactivité
-
+   /* Gestion inactivité */
+   //La valeur du compteur reste en revanche à revoir
+   if((Val_PB == Val_PB_Old) && (A = A_Old) && (B_Pressed == B_Released) && (ActivityCounter == 5000))
+   {
+       //Eteindre rétroéclairage
+       Pec12.InactivityDuration = 0;
+       Pec12.NoActivity = 1;
+   }
+   else
+   {
+       Pec12.InactivityDuration ++;
+       Pec12.NoActivity = 0;
+   }
 
    
  } // ScanPec12
