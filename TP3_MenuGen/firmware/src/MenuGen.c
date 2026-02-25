@@ -168,11 +168,6 @@ void MENU_Execute(S_ParamGen *pParam)
                         pParam->Frequence = VALFREQMIN; // 20Hz
                     }
                     
-                    switch(indiceFrequence)
-                    {
-                        
-                    }
-                    
                     break;
                     
                 case AMPLITUDE :
@@ -185,11 +180,6 @@ void MENU_Execute(S_ParamGen *pParam)
                     if(pParam->Amplitude > VALAMPLMAX) // 10'000mV
                     {
                         pParam->Amplitude = VALAMPLMIN; // 0mV
-                    }
-                    
-                    switch(indiceAmplitude)
-                    {
-                        
                     }
                     
                     break;
@@ -208,7 +198,7 @@ void MENU_Execute(S_ParamGen *pParam)
                     
                     pParam->Offset = offsetPos - VALASOUSTRAIRE; // -5'000mV
                     
-                    
+                    break;
                     
                 default :
                     
@@ -218,20 +208,20 @@ void MENU_Execute(S_ParamGen *pParam)
             break;
         
         case FORME :
-            if((Incremente == 1) && (Decremente == 0))
+            if((Incremente == true) && (Decremente == false))
             {
                 indiceForme ++;
             }
-            if((Decremente == 1) && (Incremente == 0))
+            if((Decremente == true) && (Incremente == false))
             {
                 indiceForme --;
             }
             
-            if((Pec12IsOK == 1)&&(Pec12IsESC == 0))
+            if((Pec12IsOK == true)&&(Pec12IsESC == false))
             {
                 
             }
-            if((Pec12IsESC == 1)&&(Pec12IsOK == 0))
+            if((Pec12IsESC == true)&&(Pec12IsOK == false))
             {
                 
             }
@@ -239,20 +229,20 @@ void MENU_Execute(S_ParamGen *pParam)
             break;
         
         case FREQUENCE :
-            if((Incremente == 1) && (Decremente == 0))
+            if((Incremente == true) && (Decremente == false))
             {
                 indiceFrequence ++;
             }
-            if((Decremente == 1) && (Incremente == 0))
+            if((Decremente == true) && (Incremente == false))
             {
                 indiceFrequence --;
             }
             
-            if((Pec12IsOK == 1)&&(Pec12IsESC == 0))
+            if((Pec12IsOK == true)&&(Pec12IsESC == false))
             {
                 
             }
-            if((Pec12IsESC == 1)&&(Pec12IsOK == 0))
+            if((Pec12IsESC == true)&&(Pec12IsOK == false))
             {
                 
             }
@@ -260,20 +250,20 @@ void MENU_Execute(S_ParamGen *pParam)
             break;
         
         case AMPLITUDE :
-            if((Incremente == 1) && (Decremente == 0))
+            if((Incremente == true) && (Decremente == false))
             {
                 indiceAmplitude ++;
             }
-            if((Decremente == 1) && (Incremente == 0))
+            if((Decremente == true) && (Incremente == false))
             {
                 indiceAmplitude --;
             }
             
-            if((Pec12IsOK == 1)&&(Pec12IsESC == 0))
+            if((Pec12IsOK == true)&&(Pec12IsESC == false))
             {
                 
             }
-            if((Pec12IsESC == 1)&&(Pec12IsOK == 0))
+            if((Pec12IsESC == true)&&(Pec12IsOK == false))
             {
                 
             }
