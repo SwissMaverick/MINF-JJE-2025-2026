@@ -177,7 +177,7 @@ void ScanPec12 (bool ValA, bool ValB, bool ValPB)
    
    /* Gestion inactivité */
    //La valeur du compteur reste en revanche à revoir
-   if((Val_PB == Val_PB_Old) && (A = A_Old) && (B_Pressed == B_Released) && (ActivityCounter == 5000))
+   /*if((Val_PB == Val_PB_Old) && (A = A_Old) && (B_Pressed == B_Released) && (ActivityCounter == 5000))
    {
        //Eteindre rétroéclairage
        Pec12.InactivityDuration = 0;
@@ -187,10 +187,10 @@ void ScanPec12 (bool ValA, bool ValB, bool ValPB)
    {
        Pec12.InactivityDuration ++;
        Pec12.NoActivity = 0;
-   }
+   }*/
 
    
- } // ScanPec12
+ } // ScanPec12 
 
 
 void Pec12Init (void)

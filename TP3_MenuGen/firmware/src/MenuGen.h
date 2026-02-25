@@ -18,6 +18,13 @@ void MENU_Initialize(S_ParamGen *pParam);
 
 void MENU_Execute(S_ParamGen *pParam);
 
+#define ASTERISQUE 0
+#define AFFICHAGE 1
+#define FORME 2
+#define FREQUENCE 3
+#define AMPLITUDE 4
+#define OFFSET 5
+
 #endif
 
 
