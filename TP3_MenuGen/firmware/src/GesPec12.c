@@ -78,8 +78,8 @@ void ScanPec12 (bool ValA, bool ValB, bool ValPB)
     static uint8_t A_Old;
     uint8_t Val_PB;
     static uint8_t Val_PB_Old;
-    uint16_t PushButtonCounter;
-    uint16_t ActivityCounter;
+    //uint16_t PushButtonCounter;
+    //uint16_t ActivityCounter;
     
    /* Traitement antirebond sur A, B et PB */
    DoDebounce (&DescrA, ValA);
@@ -94,7 +94,7 @@ void ScanPec12 (bool ValA, bool ValB, bool ValPB)
    A = DebounceGetInput(&DescrA);
    
    /* Détection incrément / décrément */
-   if(B_Pressed == 1)
+   if(B_Pressed == 0)
    {
        if(A == 0)
        {

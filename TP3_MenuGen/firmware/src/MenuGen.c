@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include "MenuGen.h"
 #include "GesPec12.h"
+#include "Mc32DriverLcd.h"
 
 
 // Initialisation du menu et des paramètres
