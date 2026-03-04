@@ -75,6 +75,7 @@ void __ISR(_TIMER_1_VECTOR, ipl3AUTO) IntHandlerDrvTmrInstance0(void)
 {
     PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_1);
     
+    static uint8_t indicePostInit = 0;
     static uint16_t counterStart = 0;
     static uint8_t counterIdle = 0;
     
@@ -84,6 +85,11 @@ void __ISR(_TIMER_1_VECTOR, ipl3AUTO) IntHandlerDrvTmrInstance0(void)
     
     if(counterStart == 2990)
     {
+        if(indicePostInit == 0)
+        {
+            indicePostInit = 1;
+            LCD_ClearScreen();
+        }
         if(counterIdle == 9)
         {
             counterIdle = 0;

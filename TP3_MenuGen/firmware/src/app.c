@@ -140,6 +140,7 @@ void APP_Initialize ( void )
 
 void APP_Tasks ( void )
 {
+    static uint8_t indicePremierPassage = 0;
     /* Check the application's current state. */
     switch ( appData.state )
     {
@@ -159,18 +160,18 @@ void APP_Tasks ( void )
             Pec12Init();
 
             // Initialisation du menu
-            MENU_Initialize(&LocalParamGen);
+            //MENU_Initialize(&LocalParamGen);
 
             // Initialisation du generateur
             GENSIG_Initialize(&LocalParamGen);
-            
+            lcd_gotoxy(1,1);
             printf_lcd("TP3_MenuGen         ");
             // A adapter pour les 2 noms sur 2 lignes
             lcd_gotoxy(1,2);
             printf_lcd("Jeremie Jean-Elie   ");
             lcd_gotoxy(1,3);
             printf_lcd("Diego Savary        ");
-
+            
             // Active les timers 
             DRV_TMR0_Start();
             DRV_TMR1_Start();
@@ -183,6 +184,11 @@ void APP_Tasks ( void )
 
        case APP_STATE_SERVICE_TASKS:
             BSP_LEDToggle(BSP_LED_2);
+            if(indicePremierPassage == 0)
+            {
+                indicePremierPassage = 1;
+                MENU_Initialize(&LocalParamGen);
+            }
 
             // Execution du menu
             MENU_Execute(&LocalParamGen);
