@@ -36,7 +36,7 @@ void MENU_Execute(S_ParamGen *pParam);
 
 #define VALOFFSETMAX 10000 //Cas spécial : l'offset min est à -5000
 #define VALOFFSETMIN 0  //Ajout d'une addition de +5000 pour éviter les -
-#define VALASOUSTRAIRE
+#define VALASOUSTRAIRE 5000
 
 #endif
 

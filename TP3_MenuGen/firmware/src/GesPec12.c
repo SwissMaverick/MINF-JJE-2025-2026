@@ -145,7 +145,7 @@ void ScanPec12 (bool ValA, bool ValB, bool ValPB)
    /* Traitement du PushButton */
    /* Mise en place d'un compteur pour savoir combien de temps le bouton reste pressé */
    //La valeur du compteur reste en revanche à revoir
-   if(Val_PB = 1)
+   if(Val_PB == 1)
    {
        Pec12.PressDuration ++;
    }
