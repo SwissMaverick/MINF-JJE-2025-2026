@@ -80,7 +80,11 @@ void __ISR(_TIMER_1_VECTOR, ipl3AUTO) IntHandlerDrvTmrInstance0(void)
     static uint16_t counterStart = 0;
     static uint8_t counterIdle = 0;
     
-    ScanPec12(); // Appel de la fonction
+    bool etatA = PORTEbits.RE8; 
+    bool etatB = PORTEbits.RE9; 
+    bool etatBouton = PORTDbits.RD7;
+    
+    ScanPec12(etatA, etatB, etatBouton);
     
     LED1_W = !LED1_R; // Toggle LED1
     

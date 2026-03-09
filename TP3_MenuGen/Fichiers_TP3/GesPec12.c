@@ -27,9 +27,6 @@
 
 #include "GesPec12.h"
 #include "Mc32Debounce.h"
-#include "Mc32DriverLcd.h"
-#include "Mc32gestSpiDac.h"
-#include "app.h"
 
 // Descripteur des sinaux
 S_SwitchDescriptor DescrA;
@@ -72,93 +69,23 @@ S_Pec12_Descriptor Pec12;
 
 void ScanPec12 (bool ValA, bool ValB, bool ValPB)
 {
-    uint8_t B_Pressed;
-    uint8_t A;
-    uint8_t Val_PB;
-    static uint8_t Val_PB_Old;
-    //uint16_t PushButtonCounter;
-    //uint16_t ActivityCounter;
-    
-   /* Traitement antirebond sur A, B et PB */
+   // Traitement antirebond sur A, B et PB
    DoDebounce (&DescrA, ValA);
    DoDebounce (&DescrB, ValB);
    DoDebounce (&DescrPB, ValPB);
    
-   B_Pressed = DebounceIsPressed(&DescrB);
-   DebounceClearPressed(&DescrB);
+   // Détection incrément / décrément
+  
    
-   DebounceClearReleased(&DescrB);
-   
-   Val_PB = DebounceGetInput(&DescrPB);
-   A = DebounceGetInput(&DescrA);
-   
-   /* Détection incrément / décrément */
-   if(B_Pressed == 1)
-   {
-       Pec12ClearInactivity();
-       
-       if(A == 1)
-       {
-           //CW = 1
-           Pec12.Inc = 1;
-           
-           Pec12.Dec = 0;
-           BSP_LEDToggle(BSP_LED_4);
-       }
-       else
-       {
-           //CCW = 1
-           Pec12.Dec = 1;
-           
-           Pec12.Inc = 0;
-           BSP_LEDToggle(BSP_LED_5);
-       }
-   }
     
-   /* Traitement du PushButton */
-   /* Mise en place d'un compteur pour savoir combien de temps le bouton reste pressé */
-   //La valeur du compteur reste en revanche à revoir
-   if(Val_PB == 0)
-   {
-       Pec12.PressDuration ++;
-       Pec12ClearInactivity(); // Maintient l'écran allumé
-   }
-   else if (Val_PB == 1 && Val_PB_Old == 0) 
-   {
-   // Relâchement du bouton détecté (Flanc descendant)
-   if(Pec12.PressDuration > 0 && Pec12.PressDuration < 500) 
-   {
-       Pec12.OK = 1; // Action OK [cite: 202, 204]
-       BSP_LEDToggle(BSP_LED_7);
-   } 
-   else if(Pec12.PressDuration >= 500) 
-   {
-       Pec12.ESC = 1; // Action ESC [cite: 203, 205]
-       BSP_LEDToggle(BSP_LED_6);
-   }
-    
-   // On réinitialise le compteur pour la prochaine pression
-   Pec12.PressDuration = 0;
-   }
+   // Traitement du PushButton
    
-   Val_PB_Old = Val_PB; // Mémorisation de l'état pour le prochain cycle
    
-   /* Gestion inactivité */
-   //La valeur du compteur reste en revanche à revoir
-   /*if((Val_PB == Val_PB_Old) && (A = A_Old) && (B_Pressed == B_Released) && (ActivityCounter == 5000))
-   {
-       //Eteindre rétroéclairage
-       Pec12.InactivityDuration = 0;
-       Pec12.NoActivity = 1;
-   }
-   else
-   {
-       Pec12.InactivityDuration ++;
-       Pec12.NoActivity = 0;
-   }*/
+   // Gestion inactivité
+
 
    
- } // ScanPec12 
+ } // ScanPec12
 
 
 void Pec12Init (void)
