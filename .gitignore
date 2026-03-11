@@ -1,7 +1,28 @@
 # dossier à ne pas tenir compte 
-/firmware/TP2_PWMRS232.X/build
-/firmware/TP2_PWMRS232.X/debug
-/firmware/TP2_PWMRS232.X/dist
-/firmware/TP2_PWMRS232.X/queuelogs
-/firmware/TP2_PWMRS232.X/*.inx
-/firmware/TP2_PWMRS232.X/*.log
+TP0-LED et AD/firmware/TP2_PWMRS232.X/build
+TP0-LED et AD/firmware/TP2_PWMRS232.X/debug
+TP0-LED et AD/firmware/TP2_PWMRS232.X/dist
+TP0-LED et AD/firmware/TP2_PWMRS232.X/queuelogs
+TP0-LED et AD/firmware/TP2_PWMRS232.X/*.inx
+TP0-LED et AD/firmware/TP2_PWMRS232.X/*.log
+
+TP1-TimerPWM-Maison/firmware/TP2_PWMRS232.X/build
+TP1-TimerPWM-Maison/firmware/TP2_PWMRS232.X/debug
+TP1-TimerPWM-Maison/firmware/TP2_PWMRS232.X/dist
+TP1-TimerPWM-Maison/firmware/TP2_PWMRS232.X/queuelogs
+TP1-TimerPWM-Maison/firmware/TP2_PWMRS232.X/*.inx
+TP1-TimerPWM-Maison/firmware/TP2_PWMRS232.X/*.log
+
+TP2_PWM_RS232/firmware/TP2_PWMRS232.X/build
+TP2_PWM_RS232/firmware/TP2_PWMRS232.X/debug
+TP2_PWM_RS232/firmware/TP2_PWMRS232.X/dist
+TP2_PWM_RS232/firmware/TP2_PWMRS232.X/queuelogs
+TP2_PWM_RS232/firmware/TP2_PWMRS232.X/*.inx
+TP2_PWM_RS232/firmware/TP2_PWMRS232.X/*.log
+
+TP3_MenuGen/firmware/TP2_PWMRS232.X/build
+TP3_MenuGen/firmware/TP2_PWMRS232.X/debug
+TP3_MenuGen/firmware/TP2_PWMRS232.X/dist
+TP3_MenuGen/firmware/TP2_PWMRS232.X/queuelogs
+TP3_MenuGen/firmware/TP2_PWMRS232.X/*.inx
+TP3_MenuGen/firmware/TP2_PWMRS232.X/*.log
