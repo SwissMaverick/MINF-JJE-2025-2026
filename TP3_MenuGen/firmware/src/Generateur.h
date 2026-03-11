@@ -12,6 +12,13 @@
 
 #include "DefMenuGen.h"
 
+#define FMCU 80000000
+#define PRESCALER 8
+
+typedef struct {
+    double SampTable[100];
+} S_SampTable;
+
 // Initialisation du  générateur
 void  GENSIG_Initialize(S_ParamGen *pParam);
 
