@@ -88,17 +88,25 @@ void MENU_Execute(S_ParamGen *pParam)
         case SELECT :
             // 1. Mise à jour de l'affichage des curseurs
             // L'opérateur (condition) ? 'Vrai' : 'Faux' permet de choisir le caractère
-            lcd_gotoxy(1,1); 
-            printf_lcd("%cForme =         ", (indiceAsterisque == 0) ? '*' : ' ');
+            lcd_gotoxy(1,1);
+            if(pParam->Forme <= 3)
+            {
+                printf_lcd("%cForme = %-10s", (indiceAsterisque == 0) ? '*' : ' ', MenuFormes[pParam->Forme]);
+            }
+            else
+            {
+                // Si aucune forme n'est valide/sélectionnée, on n'affiche rien après le =
+                printf_lcd("%cForme =           ", (indiceAsterisque == 0) ? '*' : ' ');
+            }
             
             lcd_gotoxy(1,2); 
-            printf_lcd("%cFreq [Hz] =     ", (indiceAsterisque == 1) ? '*' : ' ');
+            printf_lcd("%cFreq [Hz] = %-4d  ", (indiceAsterisque == 1) ? '*' : ' ', pParam->Frequence);
             
             lcd_gotoxy(1,3); 
-            printf_lcd("%cAmpl [mV] =     ", (indiceAsterisque == 2) ? '*' : ' ');
+            printf_lcd("%cAmpl [mV] = %-5d ", (indiceAsterisque == 2) ? '*' : ' ', pParam->Amplitude);
             
             lcd_gotoxy(1,4); 
-            printf_lcd("%cOffset [mV] =   ", (indiceAsterisque == 3) ? '*' : ' ');
+            printf_lcd("%cOffset[mV]= %-5d ", (indiceAsterisque == 3) ? '*' : ' ', pParam->Offset);
 
             // 2. Logique de navigation
             if((Incremente == 1) && (indiceAsterisque < 3))
@@ -120,42 +128,48 @@ void MENU_Execute(S_ParamGen *pParam)
             break;
             
         case EDIT :
-            
             // --- AFFICHAGE ---
             lcd_gotoxy(1,1); 
-            printf_lcd("%cForme = %-10s", (indiceEdit == 0) ? '?' : ' ', MenuFormes[pParam->Forme]);
+            if(pParam->Forme <= 3)
+            {
+                printf_lcd("%cForme = %-10s", (indiceEdit == 0) ? '?' : ' ', MenuFormes[pParam->Forme]);
+            }
+            else
+            {
+                printf_lcd("%cForme =           ", (indiceEdit == 0) ? '?' : ' ');
+            }
+            
             lcd_gotoxy(1,2); 
             printf_lcd("%cFreq [Hz] = %-4d  ", (indiceEdit == 1) ? '?' : ' ', pParam->Frequence);
+            
             lcd_gotoxy(1,3); 
             printf_lcd("%cAmpl [mV] = %-5d ", (indiceEdit == 2) ? '?' : ' ', pParam->Amplitude);
+            
             lcd_gotoxy(1,4); 
             printf_lcd("%cOffset[mV]= %-5d ", (indiceEdit == 3) ? '?' : ' ', pParam->Offset);
 
             //Selection du paramètre
-            if(OK == 1)
+            if (indiceEdit == 0)
             {
-                
-                if (indiceEdit == 0)
-                {
-                    backupValeur = pParam->Forme;
-                    etatActuel = FORME;
-                }
-                if (indiceEdit == 1)
-                {
-                    backupValeur = pParam->Frequence;
-                    etatActuel = FREQUENCE;
-                }
-                if (indiceEdit == 2)
-                {
-                    backupValeur = pParam->Amplitude;
-                    etatActuel = AMPLITUDE;
-                }
-                if (indiceEdit == 3)
-                {
-                    backupValeur = pParam->Offset;
-                    etatActuel = OFFSET;
-                }
+                backupValeur = pParam->Forme;
+                etatActuel = FORME;
             }
+            if (indiceEdit == 1)
+            {
+                backupValeur = pParam->Frequence;
+                etatActuel = FREQUENCE;
+            }
+            if (indiceEdit == 2)
+            {
+                backupValeur = pParam->Amplitude;
+                etatActuel = AMPLITUDE;
+            }
+            if (indiceEdit == 3)
+            {
+                backupValeur = pParam->Offset;
+                etatActuel = OFFSET;
+            }
+            
             if(ESC == 1)
             {
                 etatActuel = SELECT; // Annule l'édition et retourne à l'état de sélection
@@ -164,20 +178,38 @@ void MENU_Execute(S_ParamGen *pParam)
             break;
 
         case FORME :
-            
-            if((Incremente == 1) && (pParam->Forme < 3))
+            if(pParam->Forme > 3)
             {
-                pParam->Forme++;
+                // Si on était dans un état vide, on force sur Sinus (0) au 1er mouvement
+                if((Incremente == 1) || (Decremente == 1))
+                {
+                    pParam->Forme = 0;
+                }
             }
-            if((Decremente == 1) && (pParam->Forme > 0))
+            else
             {
-                pParam->Forme--;
+                if((Incremente == 1) && (pParam->Forme < 3))
+                {
+                    pParam->Forme++;
+                }
+                if((Decremente == 1) && (pParam->Forme > 0))
+                {
+                    pParam->Forme--;
+                }
             }
             
-            // L'affichage se mettra à jour en temps réel si on retourne temporairement dans EDIT
+            // --- AFFICHAGE TEMPS REEL ---
             lcd_gotoxy(1,1); 
-            printf_lcd("?Forme = %-10s", MenuFormes[pParam->Forme]);
+            if(pParam->Forme <= 3)
+            {
+                printf_lcd("?Forme = %-10s", MenuFormes[pParam->Forme]);
+            }
+            else
+            {
+                printf_lcd("?Forme =           ");
+            }
 
+            // --- VALIDATION OU ANNULATION ---
             if(OK == 1)
             {
                 etatActuel = SELECT;
@@ -188,11 +220,9 @@ void MENU_Execute(S_ParamGen *pParam)
                 pParam->Forme = backupValeur;
                 etatActuel = SELECT;
             }
-                    
             break;
                     
         case FREQUENCE :
-            
             if(Incremente == 1)
             {
                 pParam->Frequence += 20;
@@ -229,7 +259,6 @@ void MENU_Execute(S_ParamGen *pParam)
             break;
                     
         case AMPLITUDE :
-            
             if(Incremente == 1)
             {
                 pParam->Amplitude += 100;
@@ -266,7 +295,6 @@ void MENU_Execute(S_ParamGen *pParam)
             break;
                     
         case OFFSET :
-            
             if(Incremente == 1)
             {
                 pParam->Offset += 100;

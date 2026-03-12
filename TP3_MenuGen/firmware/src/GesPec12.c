@@ -99,18 +99,18 @@ void ScanPec12 (bool ValA, bool ValB, bool ValPB)
        
        if(A == 1)
        {
-           //CW = 1
-           Pec12.Inc = 1;
            
-           Pec12.Dec = 0;
+           Pec12.Dec = 1;
+           
+           Pec12.Inc = 0;
            BSP_LEDToggle(BSP_LED_4);
        }
        else
        {
-           //CCW = 1
-           Pec12.Dec = 1;
            
-           Pec12.Inc = 0;
+           Pec12.Inc = 1;
+           
+           Pec12.Dec = 0;
            BSP_LEDToggle(BSP_LED_5);
        }
    }
