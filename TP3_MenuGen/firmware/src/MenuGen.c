@@ -12,10 +12,32 @@
 #include "GesPec12.h"
 #include "Mc32DriverLcd.h"
 
+#define MAGIC_VALUE 0x12345678
 
 // Initialisation du menu et des paramètres
 void MENU_Initialize(S_ParamGen *pParam)
 {
+    S_ParamGen paramTemp;
+    
+    if(paramTemp.Magic == MAGIC_VALUE)
+    {
+        // Restauration des paramètres sauvegardés
+        pParam->Forme = paramTemp.Forme;
+        pParam->Frequence = paramTemp.Frequence;
+        pParam->Amplitude = paramTemp.Amplitude;
+        pParam->Offset = paramTemp.Offset;
+        pParam->Magic = paramTemp.Magic;
+    }
+    else
+    {
+        // Valeurs par défaut si la mémoire est vide ou corrompue
+        pParam->Forme = 0; // Sinus
+        pParam->Frequence = 1000;
+        pParam->Amplitude = 5000;
+        pParam->Offset = 0;
+        pParam->Magic = MAGIC_VALUE;
+    }
+    
     lcd_gotoxy(1,1);
     printf_lcd(" Forme =");
     lcd_gotoxy(1,2);
