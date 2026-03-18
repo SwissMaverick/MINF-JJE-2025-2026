@@ -330,17 +330,16 @@ void MENU_Execute(S_ParamGen *pParam)
             break;
         
         case SAUVEGARDE_DEMANDE :
-            // --- AFFICHAGE DE LA DEMANDE ---
+            
             lcd_gotoxy(1,1); 
             printf_lcd(" Sauvegarde ?       ");
             lcd_gotoxy(1,2); 
             printf_lcd(" (appui long)       ");
             lcd_gotoxy(1,3); 
-            printf_lcd("                    "); // Efface la ligne 3
+            printf_lcd("                    ");
             lcd_gotoxy(1,4); 
-            printf_lcd("                    "); // Efface la ligne 4
-
-            // --- LOGIQUE APPUI LONG (Validation) ---
+            printf_lcd("                    ");
+            
             if(BSP_SwitchStateGet(BSP_SWITCH_3) == 0) // Si le bouton S9 est maintenu
             {
                 saveTimer++;
@@ -350,8 +349,7 @@ void MENU_Execute(S_ParamGen *pParam)
                     etatActuel = SAUVEGARDE_MESSAGE;
                     saveTimer = 0;
                     
-                    // --- ECRITURE EN MEMOIRE NVM ---
-                    pParam->Magic = MAGIC_VALUE; // On s'assure que le mot magique est bien là
+                    pParam->Magic = MAGIC_VALUE;
                     
                     NVM_WriteBlock(pParam); 
                 }
@@ -376,7 +374,7 @@ void MENU_Execute(S_ParamGen *pParam)
             break;
 
         case SAUVEGARDE_MESSAGE :
-            // --- AFFICHAGE DU RÉSULTAT ---
+            
             lcd_gotoxy(1,1); 
             if(saveStatus == 1)
             {
@@ -387,7 +385,7 @@ void MENU_Execute(S_ParamGen *pParam)
                 printf_lcd(" Sauvegarde ANNULEE!");
             }
             lcd_gotoxy(1,2); 
-            printf_lcd("                    "); // Efface la ligne du dessous
+            printf_lcd("                    ");
             
             saveTimer++;
             if(saveTimer >= 200) // 200 cycles de 10ms = 2 secondes
