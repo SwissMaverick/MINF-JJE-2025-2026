@@ -26,6 +26,8 @@ void MENU_Execute(S_ParamGen *pParam);
 #define FREQUENCE 4
 #define AMPLITUDE 5
 #define OFFSET 6
+#define SAUVEGARDE_DEMANDE 7
+#define SAUVEGARDE_MESSAGE 8
 
 //Valeurs min et max
 #define VALFREQMAX 2000

@@ -11,6 +11,7 @@
 #include "MenuGen.h"
 #include "GesPec12.h"
 #include "Mc32DriverLcd.h"
+#include "bsp.h"
 
 #define MAGIC_VALUE 0x12345678
 
@@ -61,7 +62,6 @@ void MENU_Execute(S_ParamGen *pParam)
     
     static uint8_t etatActuel = SELECT;
     static uint8_t indiceAsterisque = 0;
-    static uint8_t indiceEdit = 0;
     static int16_t valeurEdit = 0;
     
     static uint16_t saveTimer = 0;
@@ -329,6 +329,74 @@ void MENU_Execute(S_ParamGen *pParam)
             
             break;
         
+        case SAUVEGARDE_DEMANDE :
+            // --- AFFICHAGE DE LA DEMANDE ---
+            lcd_gotoxy(1,1); 
+            printf_lcd(" Sauvegarde ?       ");
+            lcd_gotoxy(1,2); 
+            printf_lcd(" (appui long)       ");
+            lcd_gotoxy(1,3); 
+            printf_lcd("                    "); // Efface la ligne 3
+            lcd_gotoxy(1,4); 
+            printf_lcd("                    "); // Efface la ligne 4
+
+            // --- LOGIQUE APPUI LONG (Validation) ---
+            if(BSP_SwitchStateGet(BSP_SWITCH_3) == 0) // Si le bouton S9 est maintenu
+            {
+                saveTimer++;
+                if(saveTimer >= 100) // 100 cycles de 10ms = 1 seconde d'appui continu
+                {
+                    saveStatus = 1; // Succès
+                    etatActuel = SAUVEGARDE_MESSAGE;
+                    saveTimer = 0;
+                    
+                    // --- ECRITURE EN MEMOIRE NVM ---
+                    pParam->Magic = MAGIC_VALUE; // On s'assure que le mot magique est bien là
+                    
+                    NVM_WriteBlock(pParam); 
+                }
+            }
+            else
+            {
+                // Si on relâche le bouton avant 1 seconde (Annulation)
+                if(saveTimer > 0) 
+                {
+                    saveStatus = 0; // Annulé
+                    etatActuel = SAUVEGARDE_MESSAGE;
+                    saveTimer = 0;
+                }
+            }
+            
+            if((Incremente == 1) || (Decremente == 1) || (OK == 1) || (ESC == 1))
+            {
+                 saveStatus = 0;
+                 etatActuel = SAUVEGARDE_MESSAGE;
+                 saveTimer = 0;
+            }
+            break;
+
+        case SAUVEGARDE_MESSAGE :
+            // --- AFFICHAGE DU RÉSULTAT ---
+            lcd_gotoxy(1,1); 
+            if(saveStatus == 1)
+            {
+                printf_lcd(" Sauvegarde OK!     ");
+            }
+            else
+            {
+                printf_lcd(" Sauvegarde ANNULEE!");
+            }
+            lcd_gotoxy(1,2); 
+            printf_lcd("                    "); // Efface la ligne du dessous
+            
+            saveTimer++;
+            if(saveTimer >= 200) // 200 cycles de 10ms = 2 secondes
+            {
+                etatActuel = SELECT;
+                saveTimer = 0;
+            }
+            break;
+            
         default :
             
             break;

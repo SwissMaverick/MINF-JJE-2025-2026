@@ -108,16 +108,19 @@ void  GENSIG_UpdateSignal(S_ParamGen *pParam)
    
 }
 
-
 // Execution du générateur
 // Fonction appelée dans Int timer3 (cycle variable variable)
 
 // Version provisoire pour test du DAC à modifier
 void  GENSIG_Execute(void)
 {
+   LED3_W = 0;
+    
    static uint16_t EchNb = 0;
   
    SPI_WriteToDac(0, Sample.SampTable[EchNb] );      // sur canal 0
    EchNb++;
    EchNb = EchNb % MAX_ECH;
+   
+   LED3_W = 1;
 }
