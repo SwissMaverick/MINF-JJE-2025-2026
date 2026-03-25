@@ -89,15 +89,15 @@ extern "C" {
 #define SYS_CLK_CONFIG_SECONDARY_XTAL       32768ul
    
 /*** Ports System Service Configuration ***/
-#define SYS_PORT_AD1PCFG        ~0xffdf
+#define SYS_PORT_AD1PCFG        ~0xfbdf
 #define SYS_PORT_CNPUE          0x98000
 #define SYS_PORT_CNEN           0x0
-#define SYS_PORT_A_TRIS         0xFFFF
-#define SYS_PORT_A_LAT          0x0000
+#define SYS_PORT_A_TRIS         0x7F0C
+#define SYS_PORT_A_LAT          0x80C0
 #define SYS_PORT_A_ODC          0x0000
 
-#define SYS_PORT_B_TRIS         0xFFDF
-#define SYS_PORT_B_LAT          0x0000
+#define SYS_PORT_B_TRIS         0xFBDF
+#define SYS_PORT_B_LAT          0x0400
 #define SYS_PORT_B_ODC          0x0000
 
 #define SYS_PORT_C_TRIS         0xFFFF
@@ -108,7 +108,7 @@ extern "C" {
 #define SYS_PORT_D_LAT          0x0000
 #define SYS_PORT_D_ODC          0x0000
 
-#define SYS_PORT_E_TRIS         0xFFFF
+#define SYS_PORT_E_TRIS         0xFFF0
 #define SYS_PORT_E_LAT          0x0000
 #define SYS_PORT_E_ODC          0x0000
 

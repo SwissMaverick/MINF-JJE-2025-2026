@@ -59,7 +59,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 /*** DEVCFG0 ***/
 
-#pragma config DEBUG =      OFF
+#pragma config DEBUG =      ON
 #pragma config ICESEL =     ICS_PGx2
 #pragma config PWP =        OFF
 #pragma config BWP =        OFF
@@ -447,13 +447,18 @@ void SYS_Initialize ( void* data )
     SYS_CLK_Initialize( NULL );
     SYS_DEVCON_Initialize(SYS_DEVCON_INDEX_0, (SYS_MODULE_INIT*)NULL);
     SYS_DEVCON_PerformanceConfig(SYS_CLK_SystemFrequencyGet());
-    SYS_DEVCON_JTAGEnable();
+    SYS_DEVCON_JTAGDisable();
 
     /* Board Support Package Initialization */
     BSP_Initialize();        
 
     /* Initialize Drivers */
-    /* Initialize USB Driver */ 
+    /*Initialize TMR0 */
+    DRV_TMR0_Initialize();
+    /*Initialize TMR1 */
+    DRV_TMR1_Initialize();
+ 
+     /* Initialize USB Driver */ 
     sysObj.drvUSBObject = DRV_USBFS_Initialize(DRV_USBFS_INDEX_0, (SYS_MODULE_INIT *) &drvUSBFSInit);
     
     /* Set priority of USB interrupt source */
