@@ -174,11 +174,6 @@ void APP_GEN_Tasks ( void )
             // Synchronise les paramètres
             // RemoteParamGen = LocalParamGen;
             
-            if (appInitialized)
-            {
-            
-                app_genData.state = APP_GEN_STATE_SERVICE_TASKS;
-            }
             break;
         }
         
