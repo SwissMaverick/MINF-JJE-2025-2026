@@ -26,3 +26,10 @@ TP3_MenuGen/firmware/TP2_PWMRS232.X/dist
 TP3_MenuGen/firmware/TP2_PWMRS232.X/queuelogs
 TP3_MenuGen/firmware/TP2_PWMRS232.X/*.inx
 TP3_MenuGen/firmware/TP2_PWMRS232.X/*.log
+
+TP4_USBGen/firmware/TP2_PWMRS232.X/build
+TP4_USBGen/firmware/TP2_PWMRS232.X/debug
+TP4_USBGen/firmware/TP2_PWMRS232.X/dist
+TP4_USBGen/firmware/TP2_PWMRS232.X/queuelogs
+TP4_USBGen/firmware/TP2_PWMRS232.X/*.inx
+TP4_USBGen/firmware/TP2_PWMRS232.X/*.log
