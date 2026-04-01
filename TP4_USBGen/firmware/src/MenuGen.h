@@ -16,7 +16,7 @@
 void MENU_Initialize(S_ParamGen *pParam);
 
 
-void MENU_Execute(S_ParamGen *pParam);
+void MENU_Execute(S_ParamGen *pParam, bool local);
 
 //Machines d'état
 #define SELECT 0

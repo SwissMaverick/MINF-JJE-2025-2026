@@ -61,7 +61,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include "system/common/sys_common.h"
 #include "app.h"
+#include "app_gen.h"
 #include "system_definitions.h"
+#include "../bsp/pic32mx_skes/Mc32DriverLcd.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -74,10 +76,43 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 void __ISR(_TIMER_1_VECTOR, ipl3AUTO) IntHandlerDrvTmrInstance0(void)
 {
     PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_1);
+    
+    static uint8_t indicePostInit = 0;
+    static uint16_t counterStart = 0;
+    static uint8_t counterIdle = 0;
+    
+    bool etatA = PORTEbits.RE8; 
+    bool etatB = PORTEbits.RE9; 
+    bool etatBouton = PORTDbits.RD7;
+    
+    ScanPec12(etatA, etatB, etatBouton);
+    
+    if(counterStart == 2999)
+    {
+        if(indicePostInit == 0)
+        {
+            indicePostInit = 1;
+        }
+        if(counterIdle == 9)
+        {
+            counterIdle = 0;
+            APP_UpdateState(APP_GEN_STATE_SERVICE_TASKS);
+        }
+        else
+        {
+            counterIdle ++;
+        }
+    }
+    else
+    {
+        counterStart ++;
+    }
 }
 void __ISR(_TIMER_3_VECTOR, ipl7AUTO) IntHandlerDrvTmrInstance1(void)
 {
     PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_3);
+    
+    GENSIG_Execute();
 }
  void __ISR(_USB_1_VECTOR, ipl4AUTO) _IntHandlerUSBInstance0(void)
 {

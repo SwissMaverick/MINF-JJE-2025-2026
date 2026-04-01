@@ -77,16 +77,17 @@ void SYS_Tasks ( void )
 
     /* Maintain Middleware & Other Libraries */
 
- 
+    
     /* USB FS Driver Task Routine */ 
      DRV_USBFS_Tasks(sysObj.drvUSBObject);
      
+ 
     /* USB Device layer tasks routine */ 
     USB_DEVICE_Tasks(sysObj.usbDevObject0);
- 
 
     /* Maintain the application's state machine. */
     APP_Tasks();
+    APP_GEN_Tasks();
 }
 
 

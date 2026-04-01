@@ -129,7 +129,36 @@ extern "C" {
 // Section: Driver Configuration
 // *****************************************************************************
 // *****************************************************************************
+/*** Timer Driver Configuration ***/
+#define DRV_TMR_INTERRUPT_MODE             true
 
+/*** Timer Driver 0 Configuration ***/
+#define DRV_TMR_PERIPHERAL_ID_IDX0          TMR_ID_1
+#define DRV_TMR_INTERRUPT_SOURCE_IDX0       INT_SOURCE_TIMER_1
+#define DRV_TMR_INTERRUPT_VECTOR_IDX0       INT_VECTOR_T1
+#define DRV_TMR_ISR_VECTOR_IDX0             _TIMER_1_VECTOR
+#define DRV_TMR_INTERRUPT_PRIORITY_IDX0     INT_PRIORITY_LEVEL3
+#define DRV_TMR_INTERRUPT_SUB_PRIORITY_IDX0 INT_SUBPRIORITY_LEVEL0
+#define DRV_TMR_CLOCK_SOURCE_IDX0           DRV_TMR_CLKSOURCE_INTERNAL
+#define DRV_TMR_PRESCALE_IDX0               TMR_PRESCALE_VALUE_8
+#define DRV_TMR_OPERATION_MODE_IDX0         DRV_TMR_OPERATION_MODE_16_BIT
+#define DRV_TMR_ASYNC_WRITE_ENABLE_IDX0     false
+#define DRV_TMR_POWER_STATE_IDX0            
+
+#define DRV_TMR_PERIPHERAL_ID_IDX1          TMR_ID_3
+#define DRV_TMR_INTERRUPT_SOURCE_IDX1       INT_SOURCE_TIMER_3
+#define DRV_TMR_INTERRUPT_VECTOR_IDX1       INT_VECTOR_T3
+#define DRV_TMR_ISR_VECTOR_IDX1             _TIMER_3_VECTOR
+#define DRV_TMR_INTERRUPT_PRIORITY_IDX1     INT_PRIORITY_LEVEL7
+#define DRV_TMR_INTERRUPT_SUB_PRIORITY_IDX1 INT_SUBPRIORITY_LEVEL0
+#define DRV_TMR_CLOCK_SOURCE_IDX1           DRV_TMR_CLKSOURCE_INTERNAL
+#define DRV_TMR_PRESCALE_IDX1               TMR_PRESCALE_VALUE_1
+#define DRV_TMR_OPERATION_MODE_IDX1         DRV_TMR_OPERATION_MODE_16_BIT
+
+#define DRV_TMR_ASYNC_WRITE_ENABLE_IDX1     false
+#define DRV_TMR_POWER_STATE_IDX1            
+
+ 
 // *****************************************************************************
 // *****************************************************************************
 // Section: Middleware & Other Library Configuration
@@ -221,38 +250,15 @@ extern "C" {
 // *****************************************************************************
 /*** Application Defined Pins ***/
 
-/*** Functions for BSP_LED_1 pin ***/
-#define BSP_LED_1Toggle() PLIB_PORTS_PinToggle(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_0)
-#define BSP_LED_1On() PLIB_PORTS_PinSet(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_0)
-#define BSP_LED_1Off() PLIB_PORTS_PinClear(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_0)
-#define BSP_LED_1StateGet() PLIB_PORTS_PinGetLatched(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_0)
-
-/*** Functions for BSP_LED_2 pin ***/
-#define BSP_LED_2Toggle() PLIB_PORTS_PinToggle(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_1)
-#define BSP_LED_2On() PLIB_PORTS_PinSet(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_1)
-#define BSP_LED_2Off() PLIB_PORTS_PinClear(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_1)
-#define BSP_LED_2StateGet() PLIB_PORTS_PinGetLatched(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_1)
-
-/*** Functions for BSP_LED_3 pin ***/
-#define BSP_LED_3Toggle() PLIB_PORTS_PinToggle(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_2)
-#define BSP_LED_3On() PLIB_PORTS_PinSet(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_2)
-#define BSP_LED_3Off() PLIB_PORTS_PinClear(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_2)
-#define BSP_LED_3StateGet() PLIB_PORTS_PinGetLatched(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_2)
-
-/*** Functions for BSP_SWITCH_3 pin ***/
-#define BSP_SWITCH_3StateGet() PLIB_PORTS_PinGet(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_13)
-
-/*** Functions for BSP_SWITCH_1 pin ***/
-#define BSP_SWITCH_1StateGet() PLIB_PORTS_PinGet(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_6)
-
-/*** Functions for BSP_SWITCH_2 pin ***/
-#define BSP_SWITCH_2StateGet() PLIB_PORTS_PinGet(PORTS_ID_0, PORT_CHANNEL_D, PORTS_BIT_POS_7)
+/*** Functions for LED0 pin ***/
+#define LED0Toggle() PLIB_PORTS_PinToggle(PORTS_ID_0, PORT_CHANNEL_A, PORTS_BIT_POS_0)
+#define LED0On() PLIB_PORTS_PinSet(PORTS_ID_0, PORT_CHANNEL_A, PORTS_BIT_POS_0)
+#define LED0Off() PLIB_PORTS_PinClear(PORTS_ID_0, PORT_CHANNEL_A, PORTS_BIT_POS_0)
+#define LED0StateGet() PLIB_PORTS_PinGetLatched(PORTS_ID_0, PORT_CHANNEL_A, PORTS_BIT_POS_0)
+#define LED0StateSet(Value) PLIB_PORTS_PinWrite(PORTS_ID_0, PORT_CHANNEL_A, PORTS_BIT_POS_0, Value)
 
 
 /*** Application Instance 0 Configuration ***/
-/*** Application Instance 0 Configuration ***/
-/* Tick time in 1msec units */
-
 #define APP_USB_SWITCH_DEBOUNCE_COUNT_FS (260)
 #define APP_USB_SWITCH_DEBOUNCE_COUNT_HS (260)
 
@@ -276,10 +282,10 @@ extern "C" {
 /* Macros defines board specific led */
 
 #define APP_USB_LED_3    BSP_LED_3
-
-/* Macros defines board specific switch */
-
-#define APP_USB_SWITCH_1    BSP_SWITCH_1
+    
+    
+#define APP_USB_SWITCH_1    BSP_SWITCH_1    
+    
 //DOM-IGNORE-BEGIN
 #ifdef __cplusplus
 }

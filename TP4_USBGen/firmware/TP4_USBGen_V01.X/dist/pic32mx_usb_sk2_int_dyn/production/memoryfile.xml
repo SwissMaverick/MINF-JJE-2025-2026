@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>                                  
+  <executable name="dist/pic32mx_usb_sk2_int_dyn/production/TP4_USBGen_V01.X.production.elf">                 
+    <memory name="program">                 
+      <units>bytes</units>                 
+      <length>531968</length>                 
+      <used>79732</used>                     
+      <free>452236</free>                     
+    </memory>                              
+    <memory name="data">              
+      <units>bytes</units>                 
+      <length>131072</length>                 
+      <used>3280</used>                     
+      <free>127792</free>                     
+    </memory>                              
+  </executable>                            
+</project>                                 

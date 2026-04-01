@@ -59,6 +59,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "usb/usb_device.h"
 #include "usb/usb_device_cdc.h"
 #include "app.h"
+#include "app_gen.h"
 
 
 // DOM-IGNORE-BEGIN

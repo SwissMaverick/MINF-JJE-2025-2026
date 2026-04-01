@@ -54,6 +54,10 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 
 #include "app.h"
+#include "Generateur.h"
+#include "system_config/pic32mx_125_sk_int_dyn/system_config.h"
+#include "../bsp/pic32mx_skes/Mc32DriverLcd.h"
+
 
 
 // *****************************************************************************
@@ -436,7 +440,7 @@ void APP_Tasks (void )
     switch(appData.state)
     {
         case APP_STATE_INIT:
-
+            
             /* Open the device layer */
             appData.deviceHandle = USB_DEVICE_Open( USB_DEVICE_INDEX_0, DRV_IO_INTENT_READWRITE );
 
@@ -510,6 +514,8 @@ void APP_Tasks (void )
             if(appData.isReadComplete || appData.isSwitchPressed)
             {
                 appData.state = APP_STATE_SCHEDULE_WRITE;
+                lcd_gotoxy(1,4);
+                printf_lcd("%s", appData.readBuffer);
             }
 
             break;

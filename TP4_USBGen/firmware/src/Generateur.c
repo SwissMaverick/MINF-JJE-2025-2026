@@ -13,6 +13,7 @@
 #include "Mc32gestSpiDac.h"
 #include "math.h"
 #include "driver/tmr/drv_tmr.h"
+#include "app.h"
 
 // T.P. 2016 100 echantillons
 #define MAX_ECH 100

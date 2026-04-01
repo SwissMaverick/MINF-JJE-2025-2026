@@ -53,7 +53,7 @@ void MENU_Initialize(S_ParamGen *pParam)
 const char MenuFormes[4][21] = {"Sinus", "Triangle", "DentDeScie", "Carre"};
 
 // Execution du menu, appel cyclique depuis l'application
-void MENU_Execute(S_ParamGen *pParam)
+void MENU_Execute(S_ParamGen *pParam, bool local)
 {
     uint8_t Incremente;
     uint8_t Decremente;
