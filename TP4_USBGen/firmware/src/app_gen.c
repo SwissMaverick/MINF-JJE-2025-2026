@@ -147,11 +147,17 @@ void APP_GEN_Tasks ( void )
         {
             bool appInitialized = true;
             
-            // Init SPI DAC
+            // Initialisation SPI DAC
             SPI_InitLTC2604();
             
             // Initialisation PEC12
             Pec12Init();
+            
+            // Initialisation I2C
+            DRV_I2C0_Initialize();
+            
+            // Initialisation antirebonds
+            
             
             // Initialisation du generateur
             GENSIG_Initialize(&LocalParamGen);

@@ -272,6 +272,8 @@
         <itemPath>../src/MenuGen.h</itemPath>
         <itemPath>../src/Mc32gest_SerComm.h</itemPath>
         <itemPath>../src/app_gen.h</itemPath>
+        <itemPath>../src/Mc32gestI2cSeeprom.h</itemPath>
+        <itemPath>../src/Mc32_I2cUtilCCS.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="bsp" projectFiles="true">
         <logicalFolder name="f1" displayName="pic32mx_skes" projectFiles="true">
@@ -739,6 +741,8 @@
         <itemPath>../src/MenuGen.c</itemPath>
         <itemPath>../src/Mc32gest_SerComm.c</itemPath>
         <itemPath>../src/app_gen.c</itemPath>
+        <itemPath>../src/Mc32gestI2cSeeprom.c</itemPath>
+        <itemPath>../src/Mc32_I2cUtilCCS.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="bsp" projectFiles="true">
         <logicalFolder name="f1" displayName="pic32mx_skes" projectFiles="true">
