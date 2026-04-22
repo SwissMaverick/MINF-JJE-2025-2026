@@ -400,3 +400,8 @@ void MENU_Execute(S_ParamGen *pParam, bool local)
             break;
     }
 }
+
+void MENU_DemandeSave(void)
+{
+    
+}
