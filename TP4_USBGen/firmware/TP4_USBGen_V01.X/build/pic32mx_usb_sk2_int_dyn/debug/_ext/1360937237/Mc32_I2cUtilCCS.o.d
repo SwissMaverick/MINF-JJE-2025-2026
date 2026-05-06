@@ -1,5 +1,5 @@
-build/pic32mx_usb_sk2_int_dyn/debug/_ext/1360937237/app.o: ../src/app.c \
- ../src/app.h \
+build/pic32mx_usb_sk2_int_dyn/debug/_ext/1360937237/Mc32_I2cUtilCCS.o: \
+ ../src/Mc32_I2cUtilCCS.c ../src/app.h \
  ../src/system_config/pic32mx_usb_sk2_int_dyn/system_config.h \
  ../../../../../../bsp/pic32mx_skes/bsp.h \
  ../../../../../../framework/peripheral/ports/plib_ports.h \
@@ -265,9 +265,9 @@ build/pic32mx_usb_sk2_int_dyn/debug/_ext/1360937237/app.o: ../src/app.c \
  ../../../../../../framework/usb/usb_device_cdc.h \
  ../../../../../../framework/usb/src/usb_device_function_driver.h \
  ../../../../../../framework/usb/usb_cdc.h ../src/app.h ../src/app_gen.h \
- ../src/Generateur.h ../src/DefMenuGen.h \
- ../src/system_config/pic32mx_125_sk_int_dyn/system_config.h \
- ../../../../../../framework/../bsp/pic32mx_skes/Mc32DriverLcd.h
+ ../src/Mc32_I2cUtilCCS.h \
+ ../../../../../../framework/peripheral\i2c\plib_i2c.h \
+ ../../../../../../framework/peripheral\osc\plib_osc.h
 
 ../src/app.h:
 
@@ -805,10 +805,8 @@ build/pic32mx_usb_sk2_int_dyn/debug/_ext/1360937237/app.o: ../src/app.c \
 
 ../src/app_gen.h:
 
-../src/Generateur.h:
+../src/Mc32_I2cUtilCCS.h:
 
-../src/DefMenuGen.h:
+../../../../../../framework/peripheral\i2c\plib_i2c.h:
 
-../src/system_config/pic32mx_125_sk_int_dyn/system_config.h:
-
-../../../../../../framework/../bsp/pic32mx_skes/Mc32DriverLcd.h:
+../../../../../../framework/peripheral\osc\plib_osc.h:
