@@ -1,17 +1,10 @@
-# dossier à ne pas tenir compte 
-TP0-LED et AD/firmware/TP2_PWMRS232.X/build
-TP0-LED et AD/firmware/TP2_PWMRS232.X/debug
-TP0-LED et AD/firmware/TP2_PWMRS232.X/dist
-TP0-LED et AD/firmware/TP2_PWMRS232.X/queuelogs
-TP0-LED et AD/firmware/TP2_PWMRS232.X/*.inx
-TP0-LED et AD/firmware/TP2_PWMRS232.X/*.log
-
-TP1-TimerPWM-Maison/firmware/TP2_PWMRS232.X/build
-TP1-TimerPWM-Maison/firmware/TP2_PWMRS232.X/debug
-TP1-TimerPWM-Maison/firmware/TP2_PWMRS232.X/dist
-TP1-TimerPWM-Maison/firmware/TP2_PWMRS232.X/queuelogs
-TP1-TimerPWM-Maison/firmware/TP2_PWMRS232.X/*.inx
-TP1-TimerPWM-Maison/firmware/TP2_PWMRS232.X/*.log
+# dossier à ne pas tenir compte
+TP1-TimerPWM-Maison/firmware/TP1-TimerPWM-Maison.X/build
+TP1-TimerPWM-Maison/firmware/TP1-TimerPWM-Maison.X/debug
+TP1-TimerPWM-Maison/firmware/TP1-TimerPWM-Maison.X/dist
+TP1-TimerPWM-Maison/firmware/TP1-TimerPWM-Maison.X/queuelogs
+TP1-TimerPWM-Maison/firmware/TP1-TimerPWM-Maison.X/*.inx
+TP1-TimerPWM-Maison/firmware/TP1-TimerPWM-Maison.X/*.log
 
 TP2_PWM_RS232/firmware/TP2_PWMRS232.X/build
 TP2_PWM_RS232/firmware/TP2_PWMRS232.X/debug
@@ -20,16 +13,16 @@ TP2_PWM_RS232/firmware/TP2_PWMRS232.X/queuelogs
 TP2_PWM_RS232/firmware/TP2_PWMRS232.X/*.inx
 TP2_PWM_RS232/firmware/TP2_PWMRS232.X/*.log
 
-TP3_MenuGen/firmware/TP2_PWMRS232.X/build
-TP3_MenuGen/firmware/TP2_PWMRS232.X/debug
-TP3_MenuGen/firmware/TP2_PWMRS232.X/dist
-TP3_MenuGen/firmware/TP2_PWMRS232.X/queuelogs
-TP3_MenuGen/firmware/TP2_PWMRS232.X/*.inx
-TP3_MenuGen/firmware/TP2_PWMRS232.X/*.log
+TP3_MenuGen/firmware/TP3_MenuGen.X/build
+TP3_MenuGen/firmware/TP3_MenuGen.X/debug
+TP3_MenuGen/firmware/TP3_MenuGen.X/dist
+TP3_MenuGen/firmware/TP3_MenuGen.X/queuelogs
+TP3_MenuGen/firmware/TP3_MenuGen.X/*.inx
+TP3_MenuGen/firmware/TP3_MenuGen.X/*.log
 
-TP4_USBGen/firmware/TP2_PWMRS232.X/build
-TP4_USBGen/firmware/TP2_PWMRS232.X/debug
-TP4_USBGen/firmware/TP2_PWMRS232.X/dist
-TP4_USBGen/firmware/TP2_PWMRS232.X/queuelogs
-TP4_USBGen/firmware/TP2_PWMRS232.X/*.inx
-TP4_USBGen/firmware/TP2_PWMRS232.X/*.log
+TP4_USBGen/firmware/TP4_USBGen_V01.X/build
+TP4_USBGen/firmware/TP4_USBGen_V01.X/debug
+TP4_USBGen/firmware/TP4_USBGen_V01.X/dist
+TP4_USBGen/firmware/TP4_USBGen_V01.X/queuelogs
+TP4_USBGen/firmware/TP4_USBGen_V01.X/*.inx
+TP4_USBGen/firmware/TP4_USBGen_V01.X/*.log
