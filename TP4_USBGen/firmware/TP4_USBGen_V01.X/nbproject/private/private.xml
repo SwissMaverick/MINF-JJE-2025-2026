@@ -2,6 +2,16 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/microchip/harmony/v2_06/apps/usb/device/TP4_USBGen/firmware/src/Mc32gest_SerComm.c</file>
+            <file>file:/C:/microchip/harmony/v2_06/apps/usb/device/TP4_USBGen/firmware/src/MenuGen.c</file>
+            <file>file:/C:/microchip/harmony/v2_06/apps/usb/device/TP4_USBGen/firmware/src/Mc32gestI2cSeeprom.c</file>
+            <file>file:/C:/microchip/harmony/v2_06/apps/usb/device/TP4_USBGen/firmware/src/Generateur.c</file>
+            <file>file:/C:/microchip/harmony/v2_06/apps/usb/device/TP4_USBGen/firmware/src/MenuGen.h</file>
+            <file>file:/C:/microchip/harmony/v2_06/apps/usb/device/TP4_USBGen/firmware/src/app.c</file>
+            <file>file:/C:/microchip/harmony/v2_06/apps/usb/device/TP4_USBGen/firmware/src/Mc32gestI2cSeeprom.h</file>
+            <file>file:/C:/microchip/harmony/v2_06/apps/usb/device/TP4_USBGen/firmware/src/app_gen.c</file>
+            <file>file:/C:/microchip/harmony/v2_06/apps/usb/device/TP4_USBGen/firmware/src/Mc32gest_SerComm.h</file>
+        </group>
     </open-files>
 </project-private>

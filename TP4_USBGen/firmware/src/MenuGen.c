@@ -12,6 +12,7 @@
 #include "GesPec12.h"
 #include "Mc32DriverLcd.h"
 #include "bsp.h"
+#include "Mc32gestI2cSeeprom.h"
 
 #define MAGIC_VALUE 0x12345678
 
@@ -401,7 +402,67 @@ void MENU_Execute(S_ParamGen *pParam, bool local)
     }
 }
 
-void MENU_DemandeSave(void)
+int8_t MENU_DemandeSave(S_ParamGen *pParam)
 {
-    
+    //Déclaration des variables internes à la fonction 
+    static uint8_t saveCounter = 0; //Variable comptant le temps durant lequel l'utilisateur appuie sur S9
+    static uint8_t saveMode = false; //Variable indiquant si l'utilisateur a choisi de sauvegarder les valeurs ou non
+    static uint8_t saveDisplayCounter = 0; //Variable comptant le temps durant lequel la confirmation de la sauvegarde doit être affiché
+
+    //Si l'utilisateur n'a pas encore confirmé ou annulé la sauvegarde
+    if (saveMode == false) {
+        //Est-ce que S9 est pressé?
+        if (DebounceIsPressed(&DescrS9)) {
+            //Incrémentation du compteur du temps de pression sur S9
+            saveCounter++;
+            //Détection d'un flanc sur le bouton S9
+            if (DebounceGetInput(&DescrS9)) {
+                //Remise à zéro du flag du bouton S9
+                DebounceClearPressed(&DescrS9);
+                //Est-ce que le bouton S9 a été pressé plus de 500ms?
+                if (saveCounter >= SAVECOUNTERMAX) {
+                    //Enregistrement des valeurs de pParam dans la mémoire flash
+                    I2C_WriteSEEPROM((uint32_t*) pParam, MCP79411_EEPROM_BEG, sizeof (S_ParamGen));
+                    //Effacement des lignes d'affichage de la sauvegarde sur le LCD
+                    lcd_ClearLine(2);
+                    lcd_ClearLine(3);
+                    //Remise à zéro du compteur de pression sur S9
+                    saveCounter = 0;
+                    //Changement du mode de la sauvegarde afin d'afficher la confiamation de l'enregistrement des valeurs
+                    saveMode = true;
+                    //Affichage de la confirmation de la sauvegarde
+                    lcd_gotoxy(1, 2);
+                    printf_lcd("    Sauvegarde OK");
+                    
+                } else {
+                    //Effacement des lignes d'affichage de la sauvegarde sur le LCD
+                    lcd_ClearLine(2);
+                    lcd_ClearLine(3);
+                    //Remise à zéro du compteur de pression sur S9
+                    saveCounter = 0;
+                    //Changement du mode de la sauvegarde afin d'afficher la l'annulation de l'enregistrement des valeurs
+                    saveMode = true;
+                    //Affichage de la confirmation de la sauvegarde
+                    lcd_gotoxy(1, 2);
+                    printf_lcd(" Sauvegarde ANNULEE");
+                }
+            }
+        }
+        //Retour de l'état de l'état de la sauvegarde
+        return (SAVEMODE);
+    } else if ((saveMode != false) && (saveDisplayCounter < SAVEDISPLAYTIME)) {
+        //Incrémentation du compteur de l'affichage de la sauvagarde
+        saveDisplayCounter++;
+        //Retour de l'état de l'état de la sauvegarde
+        return (SAVEMODE);
+    } else {
+       
+        //Remise à zéro du compteur de l'affichage de la sauvagarde
+        saveDisplayCounter = 0;
+        //Remise à zéro du mode de la sauvegarde
+        saveMode = false;
+        MENU_Initialize(pParam);
+        //Retour de l'état de l'état de la sauvegarde
+        return (NOSAVEMODE);
+    }
 }

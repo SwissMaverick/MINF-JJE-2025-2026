@@ -57,6 +57,13 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "Generateur.h"
 #include "system_config/pic32mx_125_sk_int_dyn/system_config.h"
 #include "../bsp/pic32mx_skes/Mc32DriverLcd.h"
+#include "Mc32DriverLcd.h"
+#include "Mc32gestI2cSeeprom.h"
+#include "GesPec12.h"
+#include "MenuGen.h"
+#include "Mc32gest_SerComm.h"
+#include "app.h"
+#include "Mc32gestSpiDac.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -125,6 +132,8 @@ void APP_GEN_Initialize ( void )
     /* TODO: Initialize your application's state machine and other
      * parameters.
      */
+    // Synchronise les paramètres
+    RemoteParamGen = LocalParamGen;
 }
 
 
@@ -145,7 +154,6 @@ void APP_GEN_Tasks ( void )
         /* Application's initial state. */
         case APP_GEN_STATE_INIT:
         {
-            bool appInitialized = true;
             
             // Initialisation SPI DAC
             SPI_InitLTC2604();
@@ -192,14 +200,14 @@ void APP_GEN_Tasks ( void )
         case APP_GEN_STATE_SERVICE_TASKS:
         {
             // Execution du menu
-            /*if(usbStat)
+            if(usbStat)
             {
                 MENU_Execute(&RemoteParamGen, false);
             }
             else
             {
                 MENU_Execute(&LocalParamGen, true);
-            }*/
+            }
             
             if(indicePremierPassage == 0)
             {
@@ -207,8 +215,6 @@ void APP_GEN_Tasks ( void )
                 MENU_Initialize(&LocalParamGen);
             }
 
-            // Execution du menu
-            MENU_Execute(&LocalParamGen);
             //Execution du signal
             GENSIG_UpdatePeriode(&LocalParamGen);
             GENSIG_UpdateSignal(&LocalParamGen);

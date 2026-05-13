@@ -42,6 +42,13 @@ void MENU_DemandeSave(void);
 #define VALOFFSETMIN 0  //Ajout d'une addition de +5000 pour éviter les -
 #define VALASOUSTRAIRE 5000
 
+#define SAVECOUNTERMAX 50
+#define SAVEDISPLAYTIME 200
+#define SAVEMODE 1
+#define NOSAVEMODE 0
+
+S_SwitchDescriptor DescrS9;
+
 #endif
 
 
