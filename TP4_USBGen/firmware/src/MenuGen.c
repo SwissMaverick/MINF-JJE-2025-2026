@@ -1,468 +1,338 @@
-// Tp3  manipulation MenuGen avec PEC12
-// C. HUBER  10/02/2015 pour SLO2 2014-2015
-// Fichier MenuGen.c
-// Gestion du menu  du générateur
-// Traitement cyclique à 10 ms
+
 
 
 
 #include <stdint.h>                   
 #include <stdbool.h>
 #include "MenuGen.h"
-#include "GesPec12.h"
+
 #include "Mc32DriverLcd.h"
-#include "bsp.h"
+#include "GesPec12.h"
+#include "GesS9.h"
+#include "Mc32NVMUtil.h"
+#include "Generateur.h"
+#include "app.h"
 #include "Mc32gestI2cSeeprom.h"
 
-#define MAGIC_VALUE 0x12345678
-
-// Initialisation du menu et des paramètres
+extern APP_DATA appData;
+S_ParamGen valeursParamGen;
+const char MenuFormes[4][21] = { " Sinus", " Triangle", " DentDeScie", " Carre" };
+// Initialisation du menu et des param?tres
 void MENU_Initialize(S_ParamGen *pParam)
 {
-    S_ParamGen paramTemp;
-    
-    if(paramTemp.Magic == MAGIC_VALUE)
-    {
-        // Restauration des paramètres sauvegardés
-        pParam->Forme = paramTemp.Forme;
-        pParam->Frequence = paramTemp.Frequence;
-        pParam->Amplitude = paramTemp.Amplitude;
-        pParam->Offset = paramTemp.Offset;
-        pParam->Magic = paramTemp.Magic;
-    }
-    else
-    {
-        // Valeurs par défaut si la mémoire est vide ou corrompue
-        pParam->Forme = 0; // Sinus
-        pParam->Frequence = 1000;
-        pParam->Amplitude = 5000;
-        pParam->Offset = 0;
-        pParam->Magic = MAGIC_VALUE;
-    }
-    
-    lcd_gotoxy(1,1);
-    printf_lcd(" Forme =");
-    lcd_gotoxy(1,2);
-    printf_lcd(" Freq [Hz] =");
-    lcd_gotoxy(1,3);
-    printf_lcd(" Ampl [mV] =");
-    lcd_gotoxy(1,4);
-    printf_lcd(" Offset [mV] =");
+    lcd_gotoxy(2,1);
+    printf_lcd("Forme =%10s ",MenuFormes[pParam->Forme]);
+
+    lcd_gotoxy(2,2);
+    printf_lcd("Freq [Hz] = %4d  ",pParam->Frequence);
+
+    lcd_gotoxy(2,3);
+    printf_lcd("Ampl [mV] = %5d",pParam->Amplitude);
+
+    lcd_gotoxy(2,4);
+    printf_lcd("Offset [mV] = %4d",pParam->Offset);
 }
 
+#define CHOIX 0
+#define MODIFICATION 1
+#define SAUVEGARDE 2
 
-const char MenuFormes[4][21] = {"Sinus", "Triangle", "DentDeScie", "Carre"};
-
+    static uint8_t Menu_Mode = CHOIX; // Variable de la machine d'etat du menu
+    
 // Execution du menu, appel cyclique depuis l'application
-void MENU_Execute(S_ParamGen *pParam, bool local)
+void MENU_Execute(S_ParamGen *pParam, bool remote_status)
 {
-    uint8_t Incremente;
-    uint8_t Decremente;
-    uint8_t OK;
-    uint8_t ESC;
     
-    static uint8_t etatActuel = SELECT;
-    static uint8_t indiceAsterisque = 0;
-    static int16_t valeurEdit = 0;
+    static uint8_t menu_select = 0; 
+    static bool enable_cpt = 0; //variable qui active le compteur du menu de sauvegarde
+    static bool saving_mode = 0; // variable pour afficher une seule fois le menu de sauvegarde
+    static uint8_t Saving_counter = 0; // Variable de comptage pour le menu de sauvegarde
+    static S_ParamGen buffer;
+   
+    static int index; //index etant utiliser dans les boucles for
+    static uint8_t first_time = 0;   // Variable indiquant si on est au premier passage
+
     
-    static uint16_t saveTimer = 0;
-    static uint8_t saveStatus = 0;
-    
-    Incremente = Pec12IsPlus();
-    if(Incremente) 
+    // Initialisation lors du premier passage
+    if(!first_time)
     {
-        Pec12ClearPlus();
-    }
-
-    Decremente = Pec12IsMinus();
-    if(Decremente)
-    {
-        Pec12ClearMinus();
-    }
-
-    OK = Pec12IsOK();
-    if(OK)
-    {
-        Pec12ClearOK();
-    }
-
-    ESC = Pec12IsESC();
-    if(ESC)
-    {
-       Pec12ClearESC();
+        // Initialisation du menu
+        MENU_Initialize(pParam);
+        //mise a 1 de la valeur du premier passage
+        first_time++;
     }
     
-    // Le rétroéclairage s'éteint après 5 secondes
-    if(Pec12NoActivity() == 1)
-    {
-        lcd_bl_off(); // Éteint le rétroéclairage si inactif depuis 5s
-    }
-    else
-    {
-        lcd_bl_on();  // Rallume (ou maintient allumé) dès qu'il y a de l'activité
-    }
-        
-    /* Machine d'état menu */
-    switch(etatActuel)
-    {
-        case SELECT :
-            // 1. Mise à jour de l'affichage des curseurs
-            // L'opérateur (condition) ? 'Vrai' : 'Faux' permet de choisir le caractère
-            lcd_gotoxy(1,1);
-            if(pParam->Forme <= 3)
-            {
-                printf_lcd("%cForme = %-10s", (indiceAsterisque == 0) ? '*' : ' ', MenuFormes[pParam->Forme]);
+    switch (Menu_Mode){
+        //dans le cas ou l'on doit choisir quoi modifier
+        case CHOIX :
+            if ( Pec12IsPlus()) { // test si incrémentation
+                Pec12ClearPlus(); // reset di flag d'incrementation du pec12
+                
+                //si la selection du menu n'est pas au max
+                if(menu_select < 3)
+                    //incrementation
+                    menu_select ++;
+                else
+                    //remise a 0 de la variable
+                    menu_select = 0;
             }
-            else
-            {
-                // Si aucune forme n'est valide/sélectionnée, on n'affiche rien après le =
-                printf_lcd("%cForme =           ", (indiceAsterisque == 0) ? '*' : ' ');
-            }
-            
-            lcd_gotoxy(1,2); 
-            printf_lcd("%cFreq [Hz] = %-4d  ", (indiceAsterisque == 1) ? '*' : ' ', pParam->Frequence);
-            
-            lcd_gotoxy(1,3); 
-            printf_lcd("%cAmpl [mV] = %-5d ", (indiceAsterisque == 2) ? '*' : ' ', pParam->Amplitude);
-            
-            lcd_gotoxy(1,4); 
-            printf_lcd("%cOffset[mV]= %-5d ", (indiceAsterisque == 3) ? '*' : ' ', pParam->Offset);
 
-            // 2. Logique de navigation
-            if((Incremente == 1) && (indiceAsterisque < 3))
-            {
-                indiceAsterisque++;
-            }
-            if((Decremente == 1) && (indiceAsterisque > 0))
-            {
-                indiceAsterisque--;
-            }
-            
-            // 3. Validation
-            if(OK == 1)
-            {
-                if(indiceAsterisque == 0)
-                {
-                    valeurEdit = pParam->Forme;
-                    etatActuel = FORME; // Remplaçant de ton EDIT
-                }
-                if(indiceAsterisque == 1)
-                {
-                    valeurEdit = pParam->Frequence;
-                    etatActuel = FREQUENCE;
-                }
-                if(indiceAsterisque == 2)
-                {
-                    valeurEdit = pParam->Amplitude;
-                    etatActuel = AMPLITUDE;
-                }
-                if(indiceAsterisque == 3)
-                {
-                    valeurEdit = pParam->Offset;
-                    etatActuel = OFFSET;
-                }
-            }
-            
-            break;
-            
-        case EDIT :
-            if(valeurEdit > 3) valeurEdit = 0; // Sécurité si vide
-            
-            if((Incremente == 1) && (valeurEdit < 3))
-            {
-                valeurEdit++;
-            }
-            if((Decremente == 1) && (valeurEdit > 0))
-            {
-                valeurEdit--;
-            }
-            
-            lcd_gotoxy(1,1); 
-            printf_lcd("?Forme = %-10s", MenuFormes[valeurEdit]);
+            if ( Pec12IsMinus() ) { // test si décrémentation
+                Pec12ClearMinus();// reset di flag de decrementation du pec12
 
-            if(OK == 1)
-            {
-                pParam->Forme = valeurEdit; // APPLICATION REELLE ICI !
-                etatActuel = SELECT;
-                GENSIG_UpdateSignal(pParam); 
+                //si la selection du menu n'est pas au min
+                if(menu_select > 0)
+                    //decrementation
+                    menu_select --;
+                else
+                    //remise au max de la variable
+                    menu_select = 3;
             }
-            if(ESC == 1)
-            {
-                etatActuel = SELECT; // Annulation : on ne touche pas à pParam->Forme
+
+            if(Pec12IsOK()){ //test si bouton pec 12 ok
+                Pec12ClearOK(); // reset du flag OK du bouton pec12
+                Menu_Mode = MODIFICATION; //menu en mode modification de variable
+
+                //mise en memoire de toutes les valeurs actuelles dans un buffer
+                buffer.Forme = pParam->Forme; 
+                buffer.Frequence = pParam->Frequence;
+                buffer.Amplitude = pParam->Amplitude;
+                buffer.Offset = pParam->Offset;
+            }
+            if(S9IsOK()||S9IsESC() ){ //test si bouton S9 est ok ou esc
+                //clear des flags relatif a l'appuie du bouton S9
+                S9ClearESC();    
+                S9ClearOK();
+                //reset du flag d'inactivité
+                Pec12ClearInactivity(); 
+                //passage en mode sauvegade
+                if(remote_status == false)
+                Menu_Mode = SAUVEGARDE;
             }
             break;
-                    
-        case FORME :
-            if(valeurEdit > 3) 
-            {
-                valeurEdit = 0; // Sécurité si vide
+        case MODIFICATION :
+            if(Pec12IsESC()){ //sorti du mode de modification sans sauvegarde
+                Pec12ClearESC(); //clear du flag du bouton S9 
+                Menu_Mode = CHOIX;
             }
-            
-            if((Incremente == 1) && (valeurEdit < 3))
-            {
-                valeurEdit++;
-            }
-            if((Decremente == 1) && (valeurEdit > 0))
-            {
-                valeurEdit--;
-            }
-            
-            lcd_gotoxy(1,1); 
-            printf_lcd("?Forme = %-10s", MenuFormes[valeurEdit]);
 
-            if(OK == 1)
-            {
-                pParam->Forme = valeurEdit;
-                etatActuel = SELECT;
-                GENSIG_UpdateSignal(pParam); 
+            if ( Pec12IsPlus()) { // test si incrémentation
+                Pec12ClearPlus(); // reset di flag d'incrementation du pec12
+                switch (menu_select) {
+                    case 0 :  //forme
+                        //si la valeur à modifier n'est pas au max
+                        if(buffer.Forme < 3){
+                            buffer.Forme++;//incrementation
+                        }
+                        else{
+                            buffer.Forme = 0;//remise a 0 de la variable
+                        }
+                        break;
+                    case 1 : //freq
+                        //si la valeur à modifier n'est pas au max
+                        if(buffer.Frequence < 2000){
+                            buffer.Frequence +=20;//incrementation
+                        }
+                        //si la valeur a modifier est au max
+                        else if(buffer.Frequence == 2000){
+                            buffer.Frequence = 0;//remise a 0 de la variable
+                        }
+                        break;
+                    case 2: //ampli
+                        //si la valeur à modifier n'est pas au max
+                        if(buffer.Amplitude < 10000){
+                            buffer.Amplitude+=100;//incrementation
+                        }
+                        break;
+                    case 3 : //offset
+                        //si la valeur à modifier n'est pas au max
+                        if(buffer.Offset < 5000){
+                            buffer.Offset+=100;//incrementation
+                        }
+                        break;
+                    }
             }
-            if(ESC == 1)
-            {
-                etatActuel = SELECT;
-            }
-            break;
-            
-        case FREQUENCE :
-            if(Incremente == 1)
-            {
-                valeurEdit += 20;
-            }
-            if(Decremente == 1)
-            {
-                valeurEdit -= 20;
-            }
-            
-            // Rebouclement selon la donnée [cite: 63, 64]
-            if(valeurEdit < 20)
-            {
-                valeurEdit = 2000;
-            }
-            if(valeurEdit > 2000)
-            {
-                valeurEdit = 20;
-            }
-            
-            lcd_gotoxy(1,2); 
-            printf_lcd("?Freq [Hz] = %-4d  ", valeurEdit);
 
-            if(OK == 1)
-            {
-                pParam->Frequence = valeurEdit;
-                etatActuel = SELECT;
-                GENSIG_UpdatePeriode(pParam);
+            if ( Pec12IsMinus()) { // test si décrémentation
+                Pec12ClearMinus(); // reset di flag de decrementation du pec12
+                switch (menu_select) {
+                    case 0 :  //forme
+                        //si la valeur à modifier n'est pas au min
+                        if(buffer.Forme > 0){
+                            buffer.Forme--;//decrementation
+                        }
+                        else{
+                            buffer.Forme = 3;
+                        }
+                        break;
+                    case 1 : //freq
+                        //si la valeur à modifier n'est pas au min
+                        if(buffer.Frequence > 20){
+                            buffer.Frequence -=20;//decrementation
+                        }
+                        //si la valeur à modifier est a 0
+                        else if(buffer.Frequence == 0){
+                            buffer.Frequence = 2000; //remise au max de la variable
+                        }
+                        break;
+                    case 2: //ampli
+                        //si la valeur à modifier n'est pas au min
+                        if(buffer.Amplitude >= 100){
+                            buffer.Amplitude-=100;//decrementation
+                        }
+                        break;
+                    case 3 : //offset
+                        //si la valeur à modifier n'est pas au min
+                        if(buffer.Offset > -5000){
+                            buffer.Offset-=100;//decrementation
+                        }
+                        break;
+                    }
             }
-            if(ESC == 1)
-            {
-                etatActuel = SELECT;
-            }
-                    
-            break;
-                    
-        case AMPLITUDE :
-            if(Incremente == 1)
-            {
-                valeurEdit += 100;
-            }
-            if(Decremente == 1)
-            {
-                valeurEdit -= 100;
-            }
-            
-            // Rebouclement selon la donnée [cite: 70]
-            if(valeurEdit < 0)
-            {
-                valeurEdit = 10000;
-            }
-            if(valeurEdit > 10000)
-            {
-                valeurEdit = 0;
-            }
-            
-            lcd_gotoxy(1,3); 
-            printf_lcd("?Ampl [mV] = %-5d ", valeurEdit);
 
-            if(OK == 1)
-            {
-                pParam->Amplitude = valeurEdit;
-                etatActuel = SELECT;
-                GENSIG_UpdateSignal(pParam);
-            }
-            if(ESC == 1)
-            {
-                etatActuel = SELECT;
-            }
-            
-            break;
-                    
-        case OFFSET :
-            if(Incremente == 1)
-            {
-                valeurEdit += 100;
-            }
-            if(Decremente == 1)
-            {
-                valeurEdit -= 100;
-            }
-                    
-            // Butée (Pas de rebouclement) selon la donnée [cite: 75]
-            if(valeurEdit < -5000)
-            {
-                valeurEdit = -5000;
-            }
-            if(valeurEdit > 5000)
-            {
-                valeurEdit = 5000;
-            }
-            
-            lcd_gotoxy(1,4); 
-            printf_lcd("?Offset[mV]= %-5d ", valeurEdit);
+            if(Pec12IsOK()){ //test si bouton pec 12 ok
+                Pec12ClearOK(); //clear du flag ok du bouton pec12
 
-            if(OK == 1)
-            {
-                pParam->Offset = valeurEdit;
-                etatActuel = SELECT;
-                GENSIG_UpdateSignal(pParam);
-            }
-            if(ESC == 1)
-            {
-                etatActuel = SELECT;
-            }
-            
-            break;
-        
-        case SAUVEGARDE_DEMANDE :
-            
-            lcd_gotoxy(1,1); 
-            printf_lcd(" Sauvegarde ?       ");
-            lcd_gotoxy(1,2); 
-            printf_lcd(" (appui long)       ");
-            lcd_gotoxy(1,3); 
-            printf_lcd("                    ");
-            lcd_gotoxy(1,4); 
-            printf_lcd("                    ");
-            
-            if(BSP_SwitchStateGet(BSP_SWITCH_3) == 0) // Si le bouton S9 est maintenu
-            {
-                saveTimer++;
-                if(saveTimer >= 100) // 100 cycles de 10ms = 1 seconde d'appui continu
-                {
-                    saveStatus = 1; // Succès
-                    etatActuel = SAUVEGARDE_MESSAGE;
-                    saveTimer = 0;
-                    
-                    pParam->Magic = MAGIC_VALUE;
-                    
-                    NVM_WriteBlock(pParam); 
-                }
-            }
-            else
-            {
-                // Si on relâche le bouton avant 1 seconde (Annulation)
-                if(saveTimer > 0) 
-                {
-                    saveStatus = 0; // Annulé
-                    etatActuel = SAUVEGARDE_MESSAGE;
-                    saveTimer = 0;
-                }
-            }
-            
-            if((Incremente == 1) || (Decremente == 1) || (OK == 1) || (ESC == 1))
-            {
-                 saveStatus = 0;
-                 etatActuel = SAUVEGARDE_MESSAGE;
-                 saveTimer = 0;
-            }
-            break;
+                //validation des nouvelles valeur et retour dans le choix de la valeur a modifier
+                Menu_Mode = CHOIX;
+                pParam->Forme = buffer.Forme;
+                pParam->Frequence = buffer.Frequence;
+                pParam->Amplitude = buffer.Amplitude;
+                pParam->Offset = buffer.Offset;
 
-        case SAUVEGARDE_MESSAGE :
-            
-            lcd_gotoxy(1,1); 
-            if(saveStatus == 1)
-            {
-                printf_lcd(" Sauvegarde OK!     ");
+                //update du signal et de la periode
+                GENSIG_UpdateSignal(&buffer);
+                GENSIG_UpdatePeriode(&buffer);
             }
-            else
-            {
-                printf_lcd(" Sauvegarde ANNULEE!");
-            }
-            lcd_gotoxy(1,2); 
-            printf_lcd("                    ");
-            
-            saveTimer++;
-            if(saveTimer >= 200) // 200 cycles de 10ms = 2 secondes
-            {
-                etatActuel = SELECT;
-                saveTimer = 0;
-            }
+    
             break;
-            
-        default :
-            
-            break;
-    }
-}
+        case SAUVEGARDE :
+            if(saving_mode == 0){ //si c'est la premiere fois,
+                saving_mode = 1; //modification de la variable pour n'afficher le menu qu'une seule fois
 
-int8_t MENU_DemandeSave(S_ParamGen *pParam)
-{
-    //Déclaration des variables internes à la fonction 
-    static uint8_t saveCounter = 0; //Variable comptant le temps durant lequel l'utilisateur appuie sur S9
-    static uint8_t saveMode = false; //Variable indiquant si l'utilisateur a choisi de sauvegarder les valeurs ou non
-    static uint8_t saveDisplayCounter = 0; //Variable comptant le temps durant lequel la confirmation de la sauvegarde doit être affiché
-
-    //Si l'utilisateur n'a pas encore confirmé ou annulé la sauvegarde
-    if (saveMode == false) {
-        //Est-ce que S9 est pressé?
-        if (DebounceIsPressed(&DescrS9)) {
-            //Incrémentation du compteur du temps de pression sur S9
-            saveCounter++;
-            //Détection d'un flanc sur le bouton S9
-            if (DebounceGetInput(&DescrS9)) {
-                //Remise à zéro du flag du bouton S9
-                DebounceClearPressed(&DescrS9);
-                //Est-ce que le bouton S9 a été pressé plus de 500ms?
-                if (saveCounter >= SAVECOUNTERMAX) {
-                    //Enregistrement des valeurs de pParam dans la mémoire flash
-                    I2C_WriteSEEPROM((uint32_t*) pParam, MCP79411_EEPROM_BEG, sizeof (S_ParamGen));
-                    //Effacement des lignes d'affichage de la sauvegarde sur le LCD
-                    lcd_ClearLine(2);
+                //clear et affichage sur le LCD
+                lcd_ClearLine(1);
+                lcd_ClearLine(2);
+                lcd_ClearLine(3);
+                lcd_ClearLine(4);
+                lcd_gotoxy(4,2);
+                printf_lcd("sauvegarde ?");
+                lcd_gotoxy(4,3);
+                printf_lcd("(appuie long)");
+            }
+            if(remote_status == false){
+                if(S9IsESC()){ //si le bouton S9 est ESC
+                    S9ClearESC(); //clear du flag EST du bouton S9
+                    //affichage du message sur le lcd
                     lcd_ClearLine(3);
-                    //Remise à zéro du compteur de pression sur S9
-                    saveCounter = 0;
-                    //Changement du mode de la sauvegarde afin d'afficher la confiamation de l'enregistrement des valeurs
-                    saveMode = true;
-                    //Affichage de la confirmation de la sauvegarde
-                    lcd_gotoxy(1, 2);
-                    printf_lcd("    Sauvegarde OK");
-                    
-                } else {
-                    //Effacement des lignes d'affichage de la sauvegarde sur le LCD
-                    lcd_ClearLine(2);
-                    lcd_ClearLine(3);
-                    //Remise à zéro du compteur de pression sur S9
-                    saveCounter = 0;
-                    //Changement du mode de la sauvegarde afin d'afficher la l'annulation de l'enregistrement des valeurs
-                    saveMode = true;
-                    //Affichage de la confirmation de la sauvegarde
-                    lcd_gotoxy(1, 2);
-                    printf_lcd(" Sauvegarde ANNULEE");
+                    lcd_gotoxy(2,2);
+                    printf_lcd("Sauvegarde OK !");
+                    //ecriture de la valeur a sauvegarder dans la flash
+                    I2C_WriteSEEPROM((uint32_t*)pParam,MCP79411_EEPROM_BEG, sizeof(S_ParamGen));
+                    //active le compteur pour le menu de sauvegarde
+                    enable_cpt = 1;
                 }
+                else if(Pec12IsMinus()||Pec12IsOK()||Pec12IsPlus()||Pec12IsESC()||S9IsOK()){ //si un autre bouton à été activer,
+                    //clear de tout les flags
+                    Pec12ClearOK();
+                    Pec12ClearMinus();
+                    Pec12ClearPlus();
+                    Pec12ClearESC();
+                    S9ClearOK();
+                    //affichage du message sur le lcd
+                    lcd_ClearLine(3);
+                    lcd_gotoxy(1,2);
+                    printf_lcd("Sauvegarde ANNULEE");
+                    //active le compteur pour le menu de sauvegarde
+                    enable_cpt = 1;
+                }
+                break;
+            }
+            if(remote_status == true){
+                lcd_ClearLine(3);
+                lcd_gotoxy(2,2);
+                printf_lcd("Sauvegarde OK !");
+                //ecriture de la valeur a sauvegarder dans la flash
+                I2C_WriteSEEPROM((uint32_t*)pParam,MCP79411_EEPROM_BEG, sizeof(S_ParamGen));
+                enable_cpt = 1;
+            }
+    }
+
+    
+    if(enable_cpt == 1){ //si le compteur est activé,
+        if(Saving_counter >= 200){ //si le compteur à fini de compter
+            Menu_Mode = CHOIX; //retour au mode de selection de la valeur a modifier
+            //reset de toutes les variables relative a la sauvegarde
+            Saving_counter =0 ;
+            saving_mode = 0;
+            enable_cpt = 0;
+        }
+        else{ //si le compteur n'est pas fini, continu de compter
+            Saving_counter ++;
+        }
+    }
+
+    if(remote_status == true){
+        if(pParam->Forme != buffer.Forme ||
+           pParam->Frequence != buffer.Frequence ||
+           pParam->Amplitude != buffer.Amplitude ||
+           pParam->Offset != buffer.Offset){
+            
+                buffer.Forme = pParam->Forme; 
+                buffer.Frequence = pParam->Frequence;
+                buffer.Amplitude = pParam->Amplitude;
+                buffer.Offset = pParam->Offset;
+                //update du signal et de la periode
+                GENSIG_UpdateSignal(&buffer);
+                GENSIG_UpdatePeriode(&buffer);
+        }
+    }
+    //si le menu est en mode de modification ou de selection
+    if(Menu_Mode == CHOIX || Menu_Mode == MODIFICATION){
+        if(remote_status == true){
+            for(index =1; index <=4; index ++){
+                lcd_gotoxy(1,index);
+                printf_lcd("#");
+                affichage_LCD(pParam);
             }
         }
-        //Retour de l'état de l'état de la sauvegarde
-        return (SAVEMODE);
-    } else if ((saveMode != false) && (saveDisplayCounter < SAVEDISPLAYTIME)) {
-        //Incrémentation du compteur de l'affichage de la sauvagarde
-        saveDisplayCounter++;
-        //Retour de l'état de l'état de la sauvegarde
-        return (SAVEMODE);
-    } else {
-       
-        //Remise à zéro du compteur de l'affichage de la sauvagarde
-        saveDisplayCounter = 0;
-        //Remise à zéro du mode de la sauvegarde
-        saveMode = false;
-        MENU_Initialize(pParam);
-        //Retour de l'état de l'état de la sauvegarde
-        return (NOSAVEMODE);
+        else{
+            //efface la premiere ligne de toute les colones
+            for(index =1; index <=4; index ++){
+                lcd_gotoxy(1,index);
+                printf_lcd(" ");
+            }
+            //ecrit le * ou ? en fonction de ou nous sommes.
+            lcd_gotoxy(1,(menu_select+1));
+            if(Menu_Mode == CHOIX ){
+                printf_lcd("*");
+                affichage_LCD(pParam);
+            }
+            if(Menu_Mode == MODIFICATION ){
+                printf_lcd("?");
+                affichage_LCD(&buffer);
+            }
+        }
     }
+
+}
+
+//fonction qui affiche les valeurs selons ce qui est demander dans la données
+void affichage_LCD(S_ParamGen *pParam){
+
+    lcd_gotoxy(2,1);
+    printf_lcd("Forme =%10s ",MenuFormes[pParam->Forme]);
+
+    lcd_gotoxy(2,2);
+    printf_lcd("Freq [Hz] = %4d ",pParam->Frequence);
+
+    lcd_gotoxy(2,3);
+    printf_lcd("Ampl [mV] = %5d  ",pParam->Amplitude);
+
+    lcd_gotoxy(2,4);
+    printf_lcd("Offset [mV] = %4d",pParam->Offset);
+}
+
+void MENU_DemandeSave(void){
+    Menu_Mode = SAUVEGARDE;
 }

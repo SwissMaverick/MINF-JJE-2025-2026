@@ -31,7 +31,8 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-
+#define PRESSION_LONGUE 500
+#define TEMPS_INACTIVITE 5000
 // structure du descripteur du PEC
 // Migration : remplacement bool par champ 1 bit
 typedef struct {

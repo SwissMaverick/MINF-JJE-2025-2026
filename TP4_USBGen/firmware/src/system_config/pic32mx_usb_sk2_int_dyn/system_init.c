@@ -99,8 +99,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // Section: Driver Initialization Data
 // *****************************************************************************
 // *****************************************************************************
-// <editor-fold defaultstate="collapsed" desc="DRV_I2C Initialization Data">
-// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="DRV_USB Initialization Data">
 /******************************************************
  * USB Driver Initialization
@@ -455,8 +453,6 @@ void SYS_Initialize ( void* data )
     BSP_Initialize();        
 
     /* Initialize Drivers */
-    DRV_I2C0_Initialize();
-
     /*Initialize TMR0 */
     DRV_TMR0_Initialize();
     /*Initialize TMR1 */
@@ -486,7 +482,7 @@ void SYS_Initialize ( void* data )
 
     /* Initialize the Application */
     APP_Initialize();
-    APP_GEN_Initialize();
+    APP_GENERATOR_Initialize();
 }
 
 

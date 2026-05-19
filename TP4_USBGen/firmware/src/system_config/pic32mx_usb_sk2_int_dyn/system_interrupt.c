@@ -61,9 +61,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include "system/common/sys_common.h"
 #include "app.h"
-#include "app_gen.h"
+#include "app_generator.h"
 #include "system_definitions.h"
-#include "../bsp/pic32mx_skes/Mc32DriverLcd.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -73,46 +72,35 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
  
 
-void __ISR(_TIMER_1_VECTOR, ipl3AUTO) IntHandlerDrvTmrInstance0(void)
+void __ISR(_TIMER_1_VECTOR, ipl1AUTO) IntHandlerDrvTmrInstance0(void)
 {
+    static uint16_t cpt = 0;
+    //clear du flag de l'interuption
     PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_1);
+    //obtient les infos du bouton s9 et du pec12
+    ScanPec12(PEC12_A, PEC12_B, PEC12_PB);
+    ScanS9(S_OK);
     
-    static uint8_t indicePostInit = 0;
-    static uint16_t counterStart = 0;
-    static uint8_t counterIdle = 0;
-    
-    bool etatA = PORTEbits.RE8; 
-    bool etatB = PORTEbits.RE9; 
-    bool etatBouton = PORTDbits.RD7;
-    
-    ScanPec12(etatA, etatB, etatBouton);
-    
-    if(counterStart == 2999)
+    //comtpeur de 3 secondes
+    cpt++;
+    if(cpt >= 3000)
     {
-        if(indicePostInit == 0)
-        {
-            indicePostInit = 1;
-        }
-        if(counterIdle == 9)
-        {
-            counterIdle = 0;
-            APP_UpdateState(APP_GEN_STATE_SERVICE_TASKS);
-        }
-        else
-        {
-            counterIdle ++;
-        }
+        //remise du compteur a 3 seconde - 10ms 
+        cpt = 2990;
+        //va dans l'app service task
+        APP_UpdateGeneratorState(APP_GENERATOR_STATE_SERVICE_TASKS);
     }
-    else
-    {
-        counterStart ++;
-    }
+     BSP_LEDToggle(BSP_LED_1);
 }
-void __ISR(_TIMER_3_VECTOR, ipl7AUTO) IntHandlerDrvTmrInstance1(void)
+void __ISR(_TIMER_3_VECTOR, ipl1AUTO) IntHandlerDrvTmrInstance1(void)
 {
+    LED0_W = 0;
+    //clear du flag de l'interuption
     PLIB_INT_SourceFlagClear(INT_ID_0,INT_SOURCE_TIMER_3);
-    
+    //execution du generateur
     GENSIG_Execute();
+    LED0_W = 1;
+    
 }
  void __ISR(_USB_1_VECTOR, ipl4AUTO) _IntHandlerUSBInstance0(void)
 {

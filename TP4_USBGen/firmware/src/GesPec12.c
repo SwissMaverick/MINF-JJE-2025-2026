@@ -1,21 +1,21 @@
-// GesPec12.c  Canevas pour réalisation  
+// GesPec12.c  Canevas pour r?alisation  
 // C. HUBER    09/02/2015
 
 // Fonctions pour la gestion du Pec12
 //
 //
-// Principe : Il est nécessaire d'appeler cycliquement la fonction ScanPec12
+// Principe : Il est n?cessaire d'appeler cycliquement la fonction ScanPec12
 //            avec un cycle de 1 ms
 //
-//  Pour la gestion du Pec12, il y a 9 fonctions à disposition :
-//       Pec12IsPlus       true indique un nouveau incrément
-//       Pec12IsMinus      true indique un nouveau décrément
+//  Pour la gestion du Pec12, il y a 9 fonctions ? disposition :
+//       Pec12IsPlus       true indique un nouveau incr?ment
+//       Pec12IsMinus      true indique un nouveau d?cr?ment
 //       Pec12IsOK         true indique action OK
 //       Pec12IsESC        true indique action ESC
-//       Pec12NoActivity   true indique abscence d'activité sur PEC12
+//       Pec12NoActivity   true indique abscence d'activit? sur PEC12
 //  Fonctions pour quittance des indications
-//       Pec12ClearPlus    annule indication d'incrément
-//       Pec12ClearMinus   annule indication de décrément
+//       Pec12ClearPlus    annule indication d'incr?ment
+//       Pec12ClearMinus   annule indication de d?cr?ment
 //       Pec12ClearOK      annule indication action OK
 //       Pec12ClearESC     annule indication action ESC
 //
@@ -23,13 +23,11 @@
 //---------------------------------------------------------------------------
 
 
-// définitions des types qui seront utilisés dans cette application
+// d?finitions des types qui seront utilis?s dans cette application
 
 #include "GesPec12.h"
 #include "Mc32Debounce.h"
 #include "Mc32DriverLcd.h"
-#include "Mc32gestSpiDac.h"
-#include "app.h"
 
 // Descripteur des sinaux
 S_SwitchDescriptor DescrA;
@@ -50,12 +48,12 @@ S_Pec12_Descriptor Pec12;
 //              recoit la valeur des signaux et du boutons
 //
 // s'appuie sur le descripteur global.
-// Après l'appel le descripteur est mis à jour
+// Apr?s l'appel le descripteur est mis ? jour
 
 // Comportement du PEC12
 // =====================
 
-// Attention 1 cran génère une pulse complète (les 4 combinaisons)
+// Attention 1 cran g?n?re une pulse compl?te (les 4 combinaisons)
 // D'ou traitement uniquement au flanc descendand de B
 
 // Dans le sens horaire CW:
@@ -72,95 +70,85 @@ S_Pec12_Descriptor Pec12;
 
 void ScanPec12 (bool ValA, bool ValB, bool ValPB)
 {
-    uint8_t B_Pressed;
-    uint8_t A;
-    uint8_t Val_PB;
-    static uint8_t Val_PB_Old;
-    //uint16_t PushButtonCounter;
-    //uint16_t ActivityCounter;
-    
-   /* Traitement antirebond sur A, B et PB */
+   // Traitement antirebond sur A, B et PB
    DoDebounce (&DescrA, ValA);
    DoDebounce (&DescrB, ValB);
    DoDebounce (&DescrPB, ValPB);
-   
-   B_Pressed = DebounceIsPressed(&DescrB);
-   DebounceClearPressed(&DescrB);
-   
-   DebounceClearReleased(&DescrB);
-   
-   Val_PB = DebounceGetInput(&DescrPB);
-   A = DebounceGetInput(&DescrA);
-   
-   /* Détection incrément / décrément */
-   if(B_Pressed == 1)
+    
+   //si le bouton est appuyer 
+   if(ValPB == 0)
    {
-       Pec12ClearInactivity();
-       
-       if(A == 1)
+       Pec12.PressDuration++;
+       Pec12.NoActivity = 0;
+   }
+   //si le bouton est relaché
+   else if(DebounceIsReleased(&DescrPB))
+   {
+      //si le bouton est relacher apres le delai de pression longue
+       if(Pec12.PressDuration >= PRESSION_LONGUE)
        {
-           
-           Pec12.Dec = 1;
-           
-           Pec12.Inc = 0;
-           BSP_LEDToggle(BSP_LED_4);
+         //on met a 1 la variable d'ESC et on met a 0 la variable OK 
+         Pec12.OK = 0;
+         Pec12.ESC = 1;
        }
        else
        {
-           
-           Pec12.Inc = 1;
-           
-           Pec12.Dec = 0;
-           BSP_LEDToggle(BSP_LED_5);
+         //on met a 0 la variable d'ESC et on met a 1 la variable OK 
+         Pec12.ESC = 0;
+         Pec12.OK = 1;
+       }
+       //dans les cas, on reset le compteur de pression et on reset la variable d'inactivité
+       Pec12.PressDuration = 0;
+       Pec12.NoActivity = 0;
+   }
+
+   //dans le cas ou on incremente,
+   else if(DebounceIsPressed(&DescrB) && (DebounceGetInput(&DescrA) == 0))
+   {
+      //on met a 1 la variable d'incrementation, on met a 0 la variable de decrementation et on reset l'inactivité
+      Pec12.Inc = 1;
+      Pec12.Dec = 0;
+      Pec12.NoActivity = 0;
+   }
+
+   else if(DebounceIsPressed(&DescrB) && (DebounceGetInput(&DescrA) == 1))
+   {
+      //on met a 0 la variable d'incrementation, on met a 1 la variable de decrementation et on reset l'inactivité
+      Pec12.Inc = 0;
+      Pec12.Dec = 1;
+      Pec12.NoActivity = 0;
+   }
+
+   DebounceClearPressed(&DescrB);
+   DebounceClearReleased(&DescrB);
+
+   DebounceClearPressed(&DescrPB);
+   DebounceClearReleased(&DescrPB);
+   
+   if(Pec12.NoActivity)
+   {
+       if(Pec12.InactivityDuration >= TEMPS_INACTIVITE)
+       {
+         //si on est inactif depuis trop longtemps, on eteint le backlight
+           //lcd_bl_off();    
+       }
+       else
+       {
+         //si on est inactif depuis peu, on incremente un compteur pour savoir depuis quand on l'est.
+           Pec12.InactivityDuration++;
        }
    }
-    
-   /* Traitement du PushButton */
-   /* Mise en place d'un compteur pour savoir combien de temps le bouton reste pressé */
-   //La valeur du compteur reste en revanche à revoir
-   if(Val_PB == 0)
+   else
    {
-       Pec12.PressDuration ++;
-       Pec12ClearInactivity(); // Maintient l'écran allumé
+      //si il y a eu de l'activité,
+      //on r'allume le backlight et on reset les variables de non activité
+       Pec12.NoActivity = 1;
+       Pec12.InactivityDuration = 0;
+       lcd_bl_on();    
    }
-   else if (Val_PB == 1 && Val_PB_Old == 0) 
-   {
-   // Relâchement du bouton détecté (Flanc descendant)
-   if(Pec12.PressDuration > 0 && Pec12.PressDuration < 500) 
-   {
-       Pec12.OK = 1; // Action OK [cite: 202, 204]
-       BSP_LEDToggle(BSP_LED_7);
-   } 
-   else if(Pec12.PressDuration >= 500) 
-   {
-       Pec12.ESC = 1; // Action ESC [cite: 203, 205]
-       BSP_LEDToggle(BSP_LED_6);
-   }
-    
-   // On réinitialise le compteur pour la prochaine pression
-   Pec12.PressDuration = 0;
-   }
+  
    
-   Val_PB_Old = Val_PB; // Mémorisation de l'état pour le prochain cycle
-   
-   /* Gestion inactivité */
-   Pec12.InactivityDuration++;
-   //La valeur du compteur reste en revanche à revoir
-   if(Pec12.InactivityDuration >= 5000) 
-    {
-        Pec12.NoActivity = 1; //Détection de non activité
-        
-        // Sécurité : on bloque le compteur à 5000 pour éviter qu'il ne 
-        // déborde (overflow) et reparte à 0 si on attend très longtemps.
-        Pec12.InactivityDuration = 5000; 
-    }
-    else
-    {
-        Pec12.NoActivity = 0; // Moins de 5 secondes = on est actif
-    }
-
-   
- } // ScanPec12 
+ } // ScanPec12
 
 
 void Pec12Init (void)
@@ -171,26 +159,23 @@ void Pec12Init (void)
    DebounceInit(&DescrPB);
    
    // Init de la structure PEc12
-    Pec12.Inc = 0;             // événement incrément  
-    Pec12.Dec = 0;             // événement décrément 
-    Pec12.OK = 0;              // événement action OK
-    Pec12.ESC = 0;             // événement action ESC
-    Pec12.NoActivity = 0;      // Indication d'activité
-    Pec12.PressDuration = 0;   // Pour durée pression du P.B.
-    Pec12.InactivityDuration = 0; // Durée inactivité
+    Pec12.Inc = 0;             // ?v?nement incr?ment  
+    Pec12.Dec = 0;             // ?v?nement d?cr?ment 
+    Pec12.OK = 0;              // ?v?nement action OK
+    Pec12.ESC = 0;             // ?v?nement action ESC
+    Pec12.NoActivity = 0;      // Indication d'activit?
+    Pec12.PressDuration = 0;   // Pour dur?e pression du P.B.
+    Pec12.InactivityDuration = 0; // Dur?e inactivit?
   
  } // Pec12Init
 
 
-
-
-
-//       Pec12IsPlus       true indique un nouveau incrément
+//       Pec12IsPlus       true indique un nouveau incr?ment
 bool Pec12IsPlus    (void) {
    return (Pec12.Inc);
 }
 
-//       Pec12IsMinus      true indique un nouveau décrément
+//       Pec12IsMinus      true indique un nouveau d?cr?ment
 bool Pec12IsMinus    (void) {
    return (Pec12.Dec);
 }
@@ -205,18 +190,18 @@ bool Pec12IsESC    (void) {
    return (Pec12.ESC);
 }
 
-//       Pec12NoActivity   true indique abscence d'activité sur PEC12
+//       Pec12NoActivity   true indique abscence d'activit? sur PEC12
 bool Pec12NoActivity    (void) {
    return (Pec12.NoActivity);
 }
 
 //  Fonctions pour quittance des indications
-//       Pec12ClearPlus    annule indication d'incrément
+//       Pec12ClearPlus    annule indication d'incr?ment
 void Pec12ClearPlus   (void) {
    Pec12.Inc = 0;
 }
 
-//       Pec12ClearMinus   annule indication de décrément
+//       Pec12ClearMinus   annule indication de d?cr?ment
 void Pec12ClearMinus   (void) {
    Pec12.Dec = 0;
 }
@@ -231,9 +216,8 @@ void Pec12ClearESC   (void) {
    Pec12.ESC = 0;
 }
 
+//      Pec12ClearInactivity    Clear l'inactivit?
 void Pec12ClearInactivity   (void) {
   Pec12.NoActivity = 0;
   Pec12.InactivityDuration = 0;
 }
-
-
