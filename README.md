@@ -5,7 +5,7 @@ TP0 : Fonctionnel et terminé
 TP1 : Fonctionnel et terminé (Consulter code maison)  
 TP2 : Fonctionnel et terminé. Le code sur ce Git est le même que sur le Git de KGR (Kazanaris/MINF-TP2).  
 TP3 : Fonctionnel et partiellement terminé. La partie de sauvegarde des valeurs n'est pas fonctionnelle.  
-TP4 : Les fonctionnalités d'USB et de génération de signaux fonctionnent mais de manière séparée. La fonction d'écriture dans l'EEPROM a été implémentée. L'app C# n'est pas encore fonctionnelle.
+TP4 : Fonctionnel et terminé. Le code entier se trouve dans le dossier TP4-USBGen. L'app C# se trouve dans le dossier App_MINF_UsbGen_JJE.
 TP4 Exemple : Exemple d'un code fonctionnant avec l'USB  
 
 PS : Etant donné que ce repo contient plusieurs TP, merci de mettre des labels TP0, TP1, etc pour les issues des TP correspondants. Les labels ont déjà été créés, il ne reste plus qu'à les assigner aux issues.
