@@ -1,0 +1,13 @@
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\obj\Debug\App_MINF_UsbGen_JJE.csproj.AssemblyReference.cache
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\obj\Debug\App_MINF_UsbGen_JJE.csproj.SuggestedBindingRedirects.cache
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\obj\Debug\AppCsTp2Pwm.Form1.resources
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\obj\Debug\App_MINF_UsbGen_JJE.csproj.GenerateResource.cache
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\obj\Debug\App_MINF_UsbGen_JJE.csproj.CoreCompileInputs.cache
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\bin\Debug\App_MINF_UsbGen_JJE.exe.config
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\bin\Debug\App_MINF_UsbGen_JJE.exe
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\bin\Debug\App_MINF_UsbGen_JJE.pdb
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\obj\Debug\App_MINF_UsbGen_JJE.Properties.Resources.resources
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\obj\Debug\App_MINF_UsbGen_JJE.exe
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\obj\Debug\App_MINF_UsbGen_JJE.pdb
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\bin\Debug\MaterialSkin.dll
+C:\Users\jerjeanelie\OneDrive - Education Vaud\ES\2ème année\2ème semestre\MINF\TP\TP4_UsbGen\Fichiers_TP4\POBJ\App_MINF_UsbGen_JJE\obj\Debug\App_MINF_UsbGen_JJE.csproj.CopyComplete
