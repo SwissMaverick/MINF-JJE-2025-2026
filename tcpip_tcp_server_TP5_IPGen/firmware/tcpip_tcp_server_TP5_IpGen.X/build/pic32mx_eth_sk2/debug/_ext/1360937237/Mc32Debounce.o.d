@@ -1,0 +1,4 @@
+build/pic32mx_eth_sk2/debug/_ext/1360937237/Mc32Debounce.o: \
+ ../src/Mc32Debounce.c ../src/Mc32Debounce.h
+
+../src/Mc32Debounce.h:
