@@ -67,7 +67,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "driver/ethmac/drv_ethmac.h"
 #include "driver/miim/drv_miim.h"
 #include "app.h"
-#include "appgen.h"
+#include "app_gen.h"
 
 
 // DOM-IGNORE-BEGIN

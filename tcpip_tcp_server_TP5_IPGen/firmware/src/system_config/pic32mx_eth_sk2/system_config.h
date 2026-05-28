@@ -283,7 +283,7 @@ extern "C" {
 
 /*** DHCP Configuration ***/
 #define TCPIP_STACK_USE_DHCP_CLIENT
-#define TCPIP_DHCP_TIMEOUT                          10
+#define TCPIP_DHCP_TIMEOUT                          5
 #define TCPIP_DHCP_TASK_TICK_RATE                   5
 #define TCPIP_DHCP_HOST_NAME_SIZE                   20
 #define TCPIP_DHCP_CLIENT_CONNECT_PORT              68
@@ -380,6 +380,7 @@ extern "C" {
                                                     TCPIP_ETH_OPEN_100 |\
                                                     TCPIP_ETH_OPEN_10 |\
                                                     TCPIP_ETH_OPEN_MDIX_AUTO |\
+                                                    TCPIP_ETH_OPEN_RMII |\
                                                     0
 
 #define TCPIP_EMAC_MODULE_ID		    			ETH_ID_0

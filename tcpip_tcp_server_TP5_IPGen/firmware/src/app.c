@@ -55,6 +55,10 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 #include "app.h"
 #include "Mc32DriverLcd.h"
+
+#include "Mc32gest_SerComm.h"
+#include "DefMenuGen.h"
+
 #define SERVER_PORT 9760
 
 // *****************************************************************************
@@ -79,7 +83,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 */
 
 APP_DATA appData;
-
+S_ParamGen paramGen;
 
 // *****************************************************************************
 // *****************************************************************************
@@ -151,10 +155,6 @@ void APP_Tasks ( void )
             if(tcpipStat < 0)
             {   // some error occurred
                 SYS_CONSOLE_MESSAGE(" APP: TCP/IP stack initialization failed!\r\n");
-                //Ajout SCA
-                lcd_gotoxy(1,4);
-                printf_lcd("TCP/IP Error");
-                
                 appData.state = APP_TCPIP_ERROR;
             }
             else if(tcpipStat == SYS_STATUS_READY)
@@ -177,6 +177,7 @@ void APP_Tasks ( void )
 
                 }
                 appData.state = APP_TCPIP_WAIT_FOR_IP;
+                
 
             }
             break;
@@ -202,6 +203,9 @@ void APP_Tasks ( void )
                     SYS_CONSOLE_MESSAGE(TCPIP_STACK_NetNameGet(netH));
                     SYS_CONSOLE_MESSAGE(" IP Address: ");
                     SYS_CONSOLE_PRINT("%d.%d.%d.%d \r\n", ipAddr.v[0], ipAddr.v[1], ipAddr.v[2], ipAddr.v[3]);
+                    //ajout
+                    lcd_gotoxy(1,4);
+                    printf_lcd("IP:%03d.%03d.%03d.%03d", ipAddr.v[0], ipAddr.v[1], ipAddr.v[2], ipAddr.v[3]);
                 }
                 appData.state = APP_TCPIP_OPENING_SERVER;
             }
@@ -264,16 +268,43 @@ void APP_Tasks ( void )
                     wCurrentChunk = wMaxGet - w;
 
                 // Transfer the data out of the TCP RX FIFO and into our local processing buffer.
-                TCPIP_TCP_ArrayGet(appData.socket, AppBuffer, wCurrentChunk);
+                TCPIP_TCP_ArrayGet(appData.socket, AppBuffer, wCurrentChunk);                                             
+                
+                /********************************************************************************************  <---  GET */
 
-                // Perform the "ToUpper" operation on each data byte
+//                
+                
+                // Perform the operation on each data byte
                 for(w2 = 0; w2 < wCurrentChunk; w2++)
                 {
                     i = AppBuffer[w2];
-                    if(i >= 'a' && i <= 'z')
-                    {
-                            i -= ('a' - 'A');
-                            AppBuffer[w2] = i;
+                    if(i == '!' )
+                    {                       
+                        GetMessage((int8_t*)AppBuffer , &paramGen, &appData.saveTodo);
+
+                        APP_GEN_SetParam(&paramGen); // passage des parametre
+                    
+                        APP_GEN_DemandeUpdate(); // demande de mise a jour des parametre
+                        
+                        if(appData.saveTodo == true)
+                        {
+                            appData.saveTodo = false;
+                            APP_GEN_DemandeSave(); // demande de sauvegarde
+                            appData.Saved = true;          
+                        }
+                        else
+                        {
+                            appData.Saved = false;
+                        }
+                        
+                        /********************************************************************************************  <---  SEND */
+                        APP_GEN_GetParam (&paramGen);
+                        SendMessage((int8_t*)AppBuffer,&paramGen, appData.Saved );
+
+                        // Transfer the data out of our local processing buffer and into the TCP TX FIFO.
+                        SYS_CONSOLE_PRINT("Server Sending %s\r\n", AppBuffer);
+
+                        TCPIP_TCP_ArrayPut(appData.socket, AppBuffer, wCurrentChunk);
                     }
                     else if(i == '\e')   //escape
                     {
@@ -281,10 +312,8 @@ void APP_Tasks ( void )
                         SYS_CONSOLE_MESSAGE("Connection was closed\r\n");
                     }
                 }
+                
 
-                // Transfer the data out of our local processing buffer and into the TCP TX FIFO.
-                SYS_CONSOLE_PRINT("Server Sending %s\r\n", AppBuffer);
-                TCPIP_TCP_ArrayPut(appData.socket, AppBuffer, wCurrentChunk);
 
                 // No need to perform any flush.  TCP data in TX FIFO will automatically transmit itself after it accumulates for a while.  If you want to decrease latency (at the expense of wasting network bandwidth on TCP overhead), perform and explicit flush via the TCPFlush() API.
             }
@@ -304,7 +333,18 @@ void APP_Tasks ( void )
     }
 }
 
- 
+bool APP_GetTCP_Status(void)
+{
+    if(appData.state == APP_TCPIP_SERVING_CONNECTION)
+    {
+        return true; 
+    }
+    else
+    {
+       return false; 
+    }
+    
+}
 
 /*******************************************************************************
  End of File

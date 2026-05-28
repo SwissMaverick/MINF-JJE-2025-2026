@@ -13,7 +13,8 @@
 #include "Generateur.h"
 #include "DefMenuGen.h"
 #include "Mc32gestSpiDac.h"
-#include "system_config/pic32mx_eth_sk2/framework/driver/drv_tmr_static.h"
+#include "Mc32NVMUtil.h"
+#include "driver/tmr/drv_tmr_static.h"
 #include "Mc32gestI2cSeeprom.h"
 
 

@@ -31,7 +31,7 @@ DEFAULTCONF=pic32mx_eth_sk2
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=pic32mx_eth_sk2 
+ALLCONFS=pic32mx_eth_sk2 pic32mz_ef_sk 
 
 
 # build
@@ -46,12 +46,14 @@ ALLCONFS=pic32mx_eth_sk2
 # clobber
 .clobber-impl: .clobber-pre .depcheck-impl
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=pic32mx_eth_sk2 clean
+	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=pic32mz_ef_sk clean
 
 
 
 # all
 .all-impl: .all-pre .depcheck-impl
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=pic32mx_eth_sk2 build
+	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=pic32mz_ef_sk build
 
 
 

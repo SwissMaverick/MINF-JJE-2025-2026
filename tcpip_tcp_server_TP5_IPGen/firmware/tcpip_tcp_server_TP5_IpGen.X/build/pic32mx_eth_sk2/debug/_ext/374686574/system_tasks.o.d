@@ -331,7 +331,9 @@ build/pic32mx_eth_sk2/debug/_ext/374686574/system_tasks.o: \
  ../../../../../framework/driver/ethmac/drv_ethmac.h \
  ../../../../../framework/driver/miim/drv_miim.h ../src/app.h \
  ../src/system_config/pic32mx_eth_sk2/system_definitions.h \
- ../src/appgen.h
+ ../src/app_gen.h ../../../../../bsp/pic32mx_skes/Mc32DriverLcd.h \
+ ../src/Mc32gestSpiDac.h ../src/MenuGen.h ../src/GesPec12.h \
+ ../src/DefMenuGen.h ../src/Generateur.h
 
 ../src/system_config/pic32mx_eth_sk2/system_config.h:
 
@@ -997,4 +999,16 @@ build/pic32mx_eth_sk2/debug/_ext/374686574/system_tasks.o: \
 
 ../src/system_config/pic32mx_eth_sk2/system_definitions.h:
 
-../src/appgen.h:
+../src/app_gen.h:
+
+../../../../../bsp/pic32mx_skes/Mc32DriverLcd.h:
+
+../src/Mc32gestSpiDac.h:
+
+../src/MenuGen.h:
+
+../src/GesPec12.h:
+
+../src/DefMenuGen.h:
+
+../src/Generateur.h:

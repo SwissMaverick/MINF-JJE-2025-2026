@@ -119,6 +119,10 @@ typedef struct
 
     TCP_SOCKET              socket;
 
+    bool saveTodo;
+    
+    bool Saved;
+    
 } APP_DATA;
 
 
@@ -203,6 +207,7 @@ void APP_Initialize ( void );
 
 void APP_Tasks ( void );
 
+bool APP_GetTCP_Status(void);
 
 #endif /* _APP_H */
 /*******************************************************************************

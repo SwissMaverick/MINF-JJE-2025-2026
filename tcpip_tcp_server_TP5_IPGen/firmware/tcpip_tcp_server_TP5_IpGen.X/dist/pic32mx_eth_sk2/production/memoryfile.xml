@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>                                  
+  <executable name="dist/pic32mx_eth_sk2/production/tcpip_tcp_server_TP5_IpGen.X.production.elf">                 
+    <memory name="program">                 
+      <units>bytes</units>                 
+      <length>531968</length>                 
+      <used>353932</used>                     
+      <free>178036</free>                     
+    </memory>                              
+    <memory name="data">              
+      <units>bytes</units>                 
+      <length>131072</length>                 
+      <used>7152</used>                     
+      <free>123920</free>                     
+    </memory>                              
+  </executable>                            
+</project>                                 

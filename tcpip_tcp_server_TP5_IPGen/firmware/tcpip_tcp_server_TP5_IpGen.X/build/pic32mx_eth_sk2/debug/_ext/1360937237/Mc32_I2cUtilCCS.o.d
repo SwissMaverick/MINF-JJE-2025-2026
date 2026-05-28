@@ -329,7 +329,9 @@ build/pic32mx_eth_sk2/debug/_ext/1360937237/Mc32_I2cUtilCCS.o: \
  ../../../../../framework/tcpip/tftps.h \
  ../../../../../framework/driver/ethmac/drv_ethmac.h \
  ../../../../../framework/driver/miim/drv_miim.h ../src/app.h \
- ../src/appgen.h ../src/Mc32_I2cUtilCCS.h \
+ ../src/app_gen.h ../../../../../bsp/pic32mx_skes/Mc32DriverLcd.h \
+ ../src/Mc32gestSpiDac.h ../src/MenuGen.h ../src/GesPec12.h \
+ ../src/DefMenuGen.h ../src/Generateur.h ../src/Mc32_I2cUtilCCS.h \
  ../../../../../framework/peripheral\i2c\plib_i2c.h \
  ../../../../../framework/peripheral/i2c/plib_i2c_helper_macros.h \
  ../../../../../framework/peripheral/i2c/processor/i2c_processor.h \
@@ -1042,7 +1044,19 @@ build/pic32mx_eth_sk2/debug/_ext/1360937237/Mc32_I2cUtilCCS.o: \
 
 ../src/app.h:
 
-../src/appgen.h:
+../src/app_gen.h:
+
+../../../../../bsp/pic32mx_skes/Mc32DriverLcd.h:
+
+../src/Mc32gestSpiDac.h:
+
+../src/MenuGen.h:
+
+../src/GesPec12.h:
+
+../src/DefMenuGen.h:
+
+../src/Generateur.h:
 
 ../src/Mc32_I2cUtilCCS.h:
 

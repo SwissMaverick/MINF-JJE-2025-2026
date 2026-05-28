@@ -782,7 +782,7 @@ void SYS_Initialize ( void* data )
 
     /* Initialize the Application */
     APP_Initialize();
-    APPGEN_Initialize();
+    APP_GEN_Initialize();
 }
 
 

@@ -6,6 +6,7 @@
 
 #include "app.h"
 #include "Mc32gest_SerComm.h"
+#include "Mc32NVMUtil.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -148,7 +149,7 @@ bool GetMessage(int8_t *USBReadBuffer, S_ParamGen *pParam, bool *SaveTodo)
 void SendMessage(int8_t *USBSendBuffer, S_ParamGen *pParam, bool Saved )
 {
     
-    char pt_Signal;
+    char pt_Signal = NULL;
     
     
     switch(pParam->Forme)

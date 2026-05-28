@@ -329,7 +329,9 @@ build/pic32mx_eth_sk2/debug/_ext/1434663852/sys_console_usb_cdc.o: \
  ../../../../../framework/tcpip/tftps.h \
  ../../../../../framework/driver/ethmac/drv_ethmac.h \
  ../../../../../framework/driver/miim/drv_miim.h ../src/app.h \
- ../src/appgen.h \
+ ../src/app_gen.h ../../../../../bsp/pic32mx_skes/Mc32DriverLcd.h \
+ ../src/Mc32gestSpiDac.h ../src/MenuGen.h ../src/GesPec12.h \
+ ../src/DefMenuGen.h ../src/Generateur.h \
  ../../../../../framework/system/console/src/sys_console_usb_cdc_local.h \
  ../../../../../framework/system/console/src/sys_console_local.h
 
@@ -993,7 +995,19 @@ build/pic32mx_eth_sk2/debug/_ext/1434663852/sys_console_usb_cdc.o: \
 
 ../src/app.h:
 
-../src/appgen.h:
+../src/app_gen.h:
+
+../../../../../bsp/pic32mx_skes/Mc32DriverLcd.h:
+
+../src/Mc32gestSpiDac.h:
+
+../src/MenuGen.h:
+
+../src/GesPec12.h:
+
+../src/DefMenuGen.h:
+
+../src/Generateur.h:
 
 ../../../../../framework/system/console/src/sys_console_usb_cdc_local.h:
 

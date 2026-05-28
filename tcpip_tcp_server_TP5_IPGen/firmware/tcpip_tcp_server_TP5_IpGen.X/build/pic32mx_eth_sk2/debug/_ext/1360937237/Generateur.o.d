@@ -1,7 +1,7 @@
 build/pic32mx_eth_sk2/debug/_ext/1360937237/Generateur.o: \
  ../src/Generateur.c ../src/Generateur.h ../src/DefMenuGen.h \
- ../src/Mc32gestSpiDac.h \
- ../src/system_config/pic32mx_eth_sk2/framework/driver/drv_tmr_static.h \
+ ../src/Mc32gestSpiDac.h ../src/Mc32NVMUtil.h \
+ ../src/system_config/pic32mx_eth_sk2/framework/driver/tmr/drv_tmr_static.h \
  ../../../../../framework/driver/tmr/drv_tmr.h \
  ../src/system_config/pic32mx_eth_sk2/system_config.h \
  ../../../../../bsp/pic32mx_skes/bsp.h \
@@ -147,7 +147,9 @@ build/pic32mx_eth_sk2/debug/_ext/1360937237/Generateur.o: \
 
 ../src/Mc32gestSpiDac.h:
 
-../src/system_config/pic32mx_eth_sk2/framework/driver/drv_tmr_static.h:
+../src/Mc32NVMUtil.h:
+
+../src/system_config/pic32mx_eth_sk2/framework/driver/tmr/drv_tmr_static.h:
 
 ../../../../../framework/driver/tmr/drv_tmr.h:
 

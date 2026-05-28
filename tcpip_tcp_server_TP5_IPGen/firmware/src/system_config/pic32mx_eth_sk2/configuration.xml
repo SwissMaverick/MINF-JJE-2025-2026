@@ -1498,27 +1498,27 @@
         <Path dnOrder="1">Source&amp;#160;Files/app</Path>
       </Template>
       <Template dnOrder="3">
-        <Name dnOrder="0">appgen.h</Name>
-        <Path dnOrder="1">Header&amp;#160;Files/app</Path>
-      </Template>
-      <Template dnOrder="4">
         <Name dnOrder="0">sys_clk_pic32mx.c</Name>
         <Path dnOrder="1">Source&amp;#160;Files/app/system_config/pic32mx_eth_sk2/framework/system/clk/src</Path>
         <Checksum dnOrder="2">FDF6C8068CFFAEEC5F8537A8D6514230</Checksum>
       </Template>
-      <Template dnOrder="5">
+      <Template dnOrder="4">
         <Name dnOrder="0">system_definitions.h</Name>
         <Path dnOrder="1">Header&amp;#160;Files/app/system_config/pic32mx_eth_sk2</Path>
-        <Checksum dnOrder="2">BA6F5CB21343581435351D9508686615</Checksum>
+        <Checksum dnOrder="2">5381D803D01FEFE174EA3C03B5B3CC4F</Checksum>
+      </Template>
+      <Template dnOrder="5">
+        <Name dnOrder="0">app_gen.h</Name>
+        <Path dnOrder="1">Header&amp;#160;Files/app</Path>
       </Template>
       <Template dnOrder="6">
-        <Name dnOrder="0">appgen.c</Name>
-        <Path dnOrder="1">Source&amp;#160;Files/app</Path>
-      </Template>
-      <Template dnOrder="7">
         <Name dnOrder="0">sys_devcon_local.h</Name>
         <Path dnOrder="1">Header&amp;#160;Files/app/system_config/pic32mx_eth_sk2/framework/system/devcon/src</Path>
         <Checksum dnOrder="2">B66F9B4DBD85DA7F9DE775E864E01395</Checksum>
+      </Template>
+      <Template dnOrder="7">
+        <Name dnOrder="0">app_gen.c</Name>
+        <Path dnOrder="1">Source&amp;#160;Files/app</Path>
       </Template>
       <Template dnOrder="8">
         <Name dnOrder="0">sys_devcon_pic32mx.c</Name>
@@ -1528,12 +1528,12 @@
       <Template dnOrder="9">
         <Name dnOrder="0">system_tasks.c</Name>
         <Path dnOrder="1">Source&amp;#160;Files/app/system_config/pic32mx_eth_sk2</Path>
-        <Checksum dnOrder="2">FFC674C185E4D3777FFD23B6BB556408</Checksum>
+        <Checksum dnOrder="2">36CB2DAB0DBECDC241F5A028B7B84F05</Checksum>
       </Template>
       <Template dnOrder="10">
         <Name dnOrder="0">system_init.c</Name>
         <Path dnOrder="1">Source&amp;#160;Files/app/system_config/pic32mx_eth_sk2</Path>
-        <Checksum dnOrder="2">14530A51DA2605161B09ABCB879ABB63</Checksum>
+        <Checksum dnOrder="2">D75AF20D055A124ECBA6F7EC525D02BE</Checksum>
       </Template>
       <Template dnOrder="11">
         <Name dnOrder="0">system_exceptions.c</Name>
@@ -1547,7 +1547,7 @@
       <Template dnOrder="13">
         <Name dnOrder="0">system_interrupt.c</Name>
         <Path dnOrder="1">Source&amp;#160;Files/app/system_config/pic32mx_eth_sk2</Path>
-        <Checksum dnOrder="2">6CA28EAB56AAA13C857AEF2BA90678F1</Checksum>
+        <Checksum dnOrder="2">CADA31763E487B46FB15FBE16B946437</Checksum>
       </Template>
       <Template dnOrder="14">
         <Name dnOrder="0">sys_ports_static.c</Name>
@@ -1566,16 +1566,16 @@
       <Template dnOrder="17">
         <Name dnOrder="0">system_config.h</Name>
         <Path dnOrder="1">Header&amp;#160;Files/app/system_config/pic32mx_eth_sk2</Path>
-        <Checksum dnOrder="2">B9D7586F7B8EE74F44D3A0A89EBA3590</Checksum>
+        <Checksum dnOrder="2">E3C0DB7CA49768C133744E4115FEA0B3</Checksum>
       </Template>
     </Templates>
     <CompilerItems dnOrder="2">
       <C32 dnOrder="0">
-        <Include dnOrder="0" value="C:\microchip\harmony\v2_06\apps\tcpip\tcpip_tcp_server_TP5_IPGen\firmware\src"/>
-        <Include dnOrder="1" value="C:\microchip\harmony\v2_06\apps\tcpip\tcpip_tcp_server_TP5_IPGen\firmware\src\system_config\pic32mx_eth_sk2"/>
-        <Include dnOrder="2" value="C:\microchip\harmony\v2_06\apps\tcpip\tcpip_tcp_server_TP5_IPGen\firmware\src\pic32mx_eth_sk2"/>
+        <Include dnOrder="0" value="C:\microchip\harmony\v2_06\apps\tcpip\tcpip_tcp_server_TP5_IpGen\firmware\src"/>
+        <Include dnOrder="1" value="C:\microchip\harmony\v2_06\apps\tcpip\tcpip_tcp_server_TP5_IpGen\firmware\src\system_config\pic32mx_eth_sk2"/>
+        <Include dnOrder="2" value="C:\microchip\harmony\v2_06\apps\tcpip\tcpip_tcp_server_TP5_IpGen\firmware\src\pic32mx_eth_sk2"/>
         <Include dnOrder="3" value="C:\microchip\harmony\v2_06\framework"/>
-        <Include dnOrder="4" value="C:\microchip\harmony\v2_06\apps\tcpip\tcpip_tcp_server_TP5_IPGen\firmware\src\system_config\pic32mx_eth_sk2\framework"/>
+        <Include dnOrder="4" value="C:\microchip\harmony\v2_06\apps\tcpip\tcpip_tcp_server_TP5_IpGen\firmware\src\system_config\pic32mx_eth_sk2\framework"/>
         <Include dnOrder="5" value="../../../../../bsp/pic32mx_skes"/>
       </C32>
     </CompilerItems>
