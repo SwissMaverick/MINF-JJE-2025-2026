@@ -54,8 +54,10 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 
 #include "app.h"
-#include <string.h>
-#include "app_generator.h"
+#include "Generateur.h"
+#include "system_config/pic32mx_125_sk_int_dyn/system_config.h"
+#include "../bsp/pic32mx_skes/Mc32DriverLcd.h"
+
 
 
 // *****************************************************************************
@@ -84,7 +86,7 @@ uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
 */
 
 APP_DATA appData;
-extern APP_GENERATOR_DATA app_generatorData;
+
 
 // *****************************************************************************
 // *****************************************************************************
@@ -260,7 +262,6 @@ void APP_USBDeviceEventHandler ( USB_DEVICE_EVENT event, void * eventData, uintp
 
             /* VBUS is not available any more. Detach the device. */
             USB_DEVICE_Detach(appData.deviceHandle);
-            appData.isConfigured = false;
             break;
 
         case USB_DEVICE_EVENT_SUSPENDED:
@@ -284,6 +285,55 @@ void APP_USBDeviceEventHandler ( USB_DEVICE_EVENT event, void * eventData, uintp
 // *****************************************************************************
 // *****************************************************************************
 
+void APP_ProcessSwitchPress()
+{
+    /* This function checks if the switch is pressed and then
+     * debounces the switch press*/
+    if(BSP_SWITCH_STATE_PRESSED == (BSP_SwitchStateGet(APP_USB_SWITCH_1)))
+    {
+        if(appData.ignoreSwitchPress)
+        {
+            /* This measn the key press is in progress */
+            if(appData.sofEventHasOccurred)
+            {
+                /* A timer event has occurred. Update the debounce timer */
+                appData.switchDebounceTimer ++;
+                appData.sofEventHasOccurred = false;
+                if (USB_DEVICE_ActiveSpeedGet(appData.deviceHandle) == USB_SPEED_FULL)
+                {
+                    appData.debounceCount = APP_USB_SWITCH_DEBOUNCE_COUNT_FS;
+                }
+                else if (USB_DEVICE_ActiveSpeedGet(appData.deviceHandle) == USB_SPEED_HIGH)
+                {
+                    appData.debounceCount = APP_USB_SWITCH_DEBOUNCE_COUNT_HS;
+                }
+                if(appData.switchDebounceTimer == appData.debounceCount)
+                {
+                    /* Indicate that we have valid switch press. The switch is
+                     * pressed flag will be cleared by the application tasks
+                     * routine. We should be ready for the next key press.*/
+                    appData.isSwitchPressed = true;
+                    appData.switchDebounceTimer = 0;
+                    appData.ignoreSwitchPress = false;
+                }
+            }
+        }
+        else
+        {
+            /* We have a fresh key press */
+            appData.ignoreSwitchPress = true;
+            appData.switchDebounceTimer = 0;
+        }
+    }
+    else
+    {
+        /* No key press. Reset all the indicators. */
+        appData.ignoreSwitchPress = false;
+        appData.switchDebounceTimer = 0;
+        appData.sofEventHasOccurred = false;
+    }
+
+}
 
 /*****************************************************
  * This function is called in every step of the
@@ -390,7 +440,7 @@ void APP_Tasks (void )
     switch(appData.state)
     {
         case APP_STATE_INIT:
-
+            
             /* Open the device layer */
             appData.deviceHandle = USB_DEVICE_Open( USB_DEVICE_INDEX_0, DRV_IO_INTENT_READWRITE );
 
@@ -456,16 +506,16 @@ void APP_Tasks (void )
                 break;
             }
 
-
+            APP_ProcessSwitchPress();
 
             /* Check if a character was received or a switch was pressed.
              * The isReadComplete flag gets updated in the CDC event handler. */
 
             if(appData.isReadComplete || appData.isSwitchPressed)
             {
-                memcpy(app_generatorData.buffer_char, appData.readBuffer, appData.numBytesRead);
-                app_generatorData.Get_Message_Flag = 1;
                 appData.state = APP_STATE_SCHEDULE_WRITE;
+                lcd_gotoxy(1,4);
+                printf_lcd("%s", appData.readBuffer);
             }
 
             break;
@@ -487,15 +537,15 @@ void APP_Tasks (void )
             if(appData.isSwitchPressed)
             {
                 /* If the switch was pressed, then send the switch prompt*/
-//                appData.isSwitchPressed = false;
-//                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
-//                        &appData.writeTransferHandle, switchPromptUSB, 23,
-//                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+                appData.isSwitchPressed = false;
+                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
+                        &appData.writeTransferHandle, switchPromptUSB, 23,
+                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
             }
             else
             {
                 /* Else echo each received character by adding 1 */
-                /*for(i=0; i<appData.numBytesRead; i++)
+                for(i=0; i<appData.numBytesRead; i++)
                 {
                     if((appData.readBuffer[i] != 0x0A) && (appData.readBuffer[i] != 0x0D))
                     {
@@ -505,7 +555,7 @@ void APP_Tasks (void )
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,
                         appData.readBuffer, appData.numBytesRead,
-                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);*/
+                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
             }
 
             break;

@@ -16,10 +16,15 @@
 
 #include "Mc32gestI2cSeeprom.h"
 #include "Mc32_I2cUtilCCS.h"
-#include <stdbool.h>
 
 
-
+// Définition pour MCP79411
+#define MCP79411_EEPROM_R    0xAF         // MCP79411 address for read
+#define MCP79411_EEPROM_W    0xAE         // MCP79411 address for write
+// La EEPROM du 79411 est de 1 Kbits donc 128 octets
+#define MCP79411_EEPROM_BEG   0x00         // addr. début EEPROM
+#define MCP79411_EEPROM_END   0x7F         // addr. fin EEPROM
+#define MCP79411_PAGE_SIZE    8            // Taille d'une page EEPROM
 
 // Definitions du bus (pour mesures)
 // #define I2C-SCK  SCL2/RA2      PORTAbits.RA2   pin 58
@@ -36,102 +41,114 @@ void I2C_InitMCP79411(void)
    bool Fast = true;
    i2c_init( Fast );
 } //end I2C_InitMCP79411
-// Ecriture d'un bloc de donnees dans la SEEPROM du MCP79411
-// ---------------------------------------------------------
 
+// Ecriture d'un bloc dans l'EEPROM du MCP79411 
 void I2C_WriteSEEPROM(void *SrcData, uint32_t EEpromAddr, uint16_t NbBytes)
 {
-    uint8_t i = 0;              // Index pour la boucle d'écriture des octets
-    uint16_t y = 0;             // Index pour la boucle des pages
-    uint8_t *i2cData = (uint8_t*)SrcData; // Cast du pointeur générique en tableau d'octets
-    uint8_t NbBytesPage = 0;    // Nombre d'octets à écrire dans la page courante
+    bool ack;
+    uint8_t i = 0;
+    uint16_t y = 0;
+    uint8_t *pointeur = (uint8_t*)SrcData; // Pointeur qui prend l'adresse de SrcData pour le prendre comme un tableau
+    uint8_t NbBytesPage = 0;
+    uint16_t timeout = 0;
+    uint32_t current_addr;
+    uint8_t espaceRestant;
     
-    // Parcours des pages nécessaires à l'écriture
-    for(y = 0; y <= (NbBytes/8); y++)
+    for(y = 0; y < NbBytes;)
     {
-        // Vérifie s'il s'agit de la dernière page à écrire
-        if(y == (NbBytes/8))
+        current_addr = EEpromAddr + y;
+        
+        espaceRestant = MCP79411_PAGE_SIZE - (current_addr % MCP79411_PAGE_SIZE);
+        
+        if((NbBytes - y) < espaceRestant)
         {
-            // Calcule le nombre d'octets restants pour la dernière page
-            NbBytesPage = NbBytes - 8*(y);
+            NbBytesPage = NbBytes - y;
         }
         else
         {
-            // Définit une page complète de 8 octets
-            NbBytesPage = 8;
+            NbBytesPage = espaceRestant;
         }
-
-        // Interrompt la boucle si aucun octet ne doit être écrit
-        if (NbBytesPage == 0) {
-            break; 
-        }
-
-        // Boucle d'attente de disponibilité du composant (ACK Polling)
+        
+        ack = false;
+        timeout = 0;
+        
         do
         {
             i2c_start();
-        } while(!i2c_write(MCP79411_EEPROM_W));
+            ack = i2c_write(MCP79411_EEPROM_W);
+            
+            if(ack == false)
+            {
+                i2c_stop();
+            }
+            
+            timeout++;
+            if(timeout > 1000) return;
+            
+        } while (ack == false);
         
-        // Envoi de l'adresse de destination dans l'EEPROM
-        i2c_write((uint8_t)EEpromAddr + (y * 8));
+        i2c_write((uint8_t)current_addr);
         
-        // Boucle d'envoi des octets de données pour la page courante
         for(i = 0; i < NbBytesPage; i++)
         {
-           i2c_write(i2cData[i+(y*8)]);
+            i2c_write(pointeur[y + i]);
         }
         
-        // Génère la condition Stop pour clore la transaction et lancer l'écriture interne
-        i2c_stop(); 
+        i2c_stop();
+        
+        y += NbBytesPage;
     }
-
 } // end I2C_WriteSEEPROM
 
-
-
-
-// Lecture d'un bloc de donnees depuis la SEEPROM du MCP79411
-// ----------------------------------------------------------
-
+// Lecture d'un bloc dans l'EEPROM du MCP79411
 void I2C_ReadSEEPROM(void *DstData, uint32_t EEpromAddr, uint16_t NbBytes)
 {
-    bool ack;
-    uint8_t *pointeur = (uint8_t*)DstData; // Cast du pointeur générique en tableau d'octets de destination
-    uint16_t i;                 // Index pour la boucle de lecture des octets
-
-    // Boucle d'attente de disponibilité du composant (ACK Polling)
+    uint16_t y; //Variable agissant comme compteur des octets lus
+    bool ack = false;
+    uint8_t *pointeur = (uint8_t*)DstData;
+    uint16_t timeout = 0;
+    
+    if(NbBytes == 0) //Si demande de lire 0 octets, on quitte
+    {
+        return;
+    }
+    
     do
     {
         i2c_start();
         ack = i2c_write(MCP79411_EEPROM_W);
+        
+        if(ack == false)
+        {
+            i2c_stop(); //Libère le bus si occupé
+        }
+        
+        timeout ++;
+        if(timeout > 1000) // Sécurité anti-blocage
+        {
+            return;
+        }
+        
     } while (ack == false);
 
-    // Envoi de l'adresse de départ de la lecture
     i2c_write(EEpromAddr);
-    
-    // Génère un Repeated Start pour changer le sens de communication du bus
     i2c_reStart();
-    
-    // Envoi de l'adresse I2C du composant en mode lecture
     i2c_write(MCP79411_EEPROM_R);
     
-    // Boucle de réception des octets de données
-    for(i = 0; i < NbBytes; i++)
+    for(y = 0; y < NbBytes; y++)
     {
-        // Vérifie s'il s'agit du dernier octet à lire
-        if (i == (NbBytes - 1)) 
+        if(y == (NbBytes -1))
         {
-            // Lecture du dernier octet avec génération d'un NACK (false)
-            pointeur[i] = i2c_read(false); 
-        } 
-        else 
+            //Dernier octets à lire, pas d'acknowledge car en dernier (page 42)
+            *pointeur = i2c_read(false);
+        }
+        else
         {
-            // Lecture des octets intermédiaires avec génération d'un ACK (true)
-            pointeur[i] = i2c_read(true);  
+            //Il reste des octets à lire, acknowledge
+            *pointeur = i2c_read(true);
         }
     }
 
-    // Génère la condition Stop pour clore la transaction I2C
     i2c_stop();
     
 } // end I2C_ReadSEEPROM

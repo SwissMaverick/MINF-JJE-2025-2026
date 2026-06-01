@@ -87,7 +87,7 @@ void SYS_Tasks ( void )
 
     /* Maintain the application's state machine. */
     APP_Tasks();
-    APP_GENERATOR_Tasks();
+    APP_GEN_Tasks();
 }
 
 

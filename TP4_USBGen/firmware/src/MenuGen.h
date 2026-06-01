@@ -16,10 +16,39 @@
 void MENU_Initialize(S_ParamGen *pParam);
 
 
-void MENU_Execute(S_ParamGen *pParam,bool remote_status);
+void MENU_Execute(S_ParamGen *pParam, bool local);
+
 void MENU_DemandeSave(void);
 
-void affichage_LCD(S_ParamGen *pParam);
+//Machines d'état
+#define SELECT 0
+#define EDIT 1
+#define AFFICHAGE 2
+#define FORME 3
+#define FREQUENCE 4
+#define AMPLITUDE 5
+#define OFFSET 6
+#define SAUVEGARDE_DEMANDE 7
+#define SAUVEGARDE_MESSAGE 8
+
+//Valeurs min et max
+#define VALFREQMAX 2000
+#define VALFREQMIN 20
+
+#define VALAMPLMAX 10000
+#define VALAMPLMIN 0
+
+#define VALOFFSETMAX 10000 //Cas spécial : l'offset min est à -5000
+#define VALOFFSETMIN 0  //Ajout d'une addition de +5000 pour éviter les -
+#define VALASOUSTRAIRE 5000
+
+#define SAVECOUNTERMAX 50
+#define SAVEDISPLAYTIME 200
+#define SAVEMODE 1
+#define NOSAVEMODE 0
+
+S_SwitchDescriptor DescrS9;
+
 #endif
 
 

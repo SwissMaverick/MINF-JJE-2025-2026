@@ -19,19 +19,8 @@
 /*--------------------------------------------------------*/
 // Prototypes des fonctions 
 /*--------------------------------------------------------*/
-typedef struct {
-            uint8_t Unknown_signal_type : 1;             // événement incrément
-            uint8_t Amp_too_big : 1;             // événement décrément
-            uint8_t Amp_too_small  : 1;              // événement action OK
-            uint8_t off_too_big : 1;             // événement action ESC
-            uint8_t off_too_small : 1;             // événement décrément
-            uint8_t frequency_too_high  : 1;              // événement action OK
-            uint8_t frequency_too_low : 1;             // événement action ESC
-} S_Receive_error_type;
 
 void SendMessage(int8_t *USBSendBuffer, S_ParamGen *pParam, bool Saved);
 bool GetMessage(int8_t *USBReadBuffer, S_ParamGen *pParam, bool *SaveTodo);
-void Init_error_type(void);
-void Error_manager(void);
 
 #endif

@@ -129,6 +129,10 @@ extern "C" {
 // Section: Driver Configuration
 // *****************************************************************************
 // *****************************************************************************
+    
+/*** I2C Driver Configuration ***/
+#define DRV_I2C_INTERRUPT_MODE             false
+
 /*** Timer Driver Configuration ***/
 #define DRV_TMR_INTERRUPT_MODE             true
 
@@ -137,7 +141,7 @@ extern "C" {
 #define DRV_TMR_INTERRUPT_SOURCE_IDX0       INT_SOURCE_TIMER_1
 #define DRV_TMR_INTERRUPT_VECTOR_IDX0       INT_VECTOR_T1
 #define DRV_TMR_ISR_VECTOR_IDX0             _TIMER_1_VECTOR
-#define DRV_TMR_INTERRUPT_PRIORITY_IDX0     INT_PRIORITY_LEVEL1
+#define DRV_TMR_INTERRUPT_PRIORITY_IDX0     INT_PRIORITY_LEVEL3
 #define DRV_TMR_INTERRUPT_SUB_PRIORITY_IDX0 INT_SUBPRIORITY_LEVEL0
 #define DRV_TMR_CLOCK_SOURCE_IDX0           DRV_TMR_CLKSOURCE_INTERNAL
 #define DRV_TMR_PRESCALE_IDX0               TMR_PRESCALE_VALUE_8
@@ -149,10 +153,10 @@ extern "C" {
 #define DRV_TMR_INTERRUPT_SOURCE_IDX1       INT_SOURCE_TIMER_3
 #define DRV_TMR_INTERRUPT_VECTOR_IDX1       INT_VECTOR_T3
 #define DRV_TMR_ISR_VECTOR_IDX1             _TIMER_3_VECTOR
-#define DRV_TMR_INTERRUPT_PRIORITY_IDX1     INT_PRIORITY_LEVEL1
+#define DRV_TMR_INTERRUPT_PRIORITY_IDX1     INT_PRIORITY_LEVEL7
 #define DRV_TMR_INTERRUPT_SUB_PRIORITY_IDX1 INT_SUBPRIORITY_LEVEL0
 #define DRV_TMR_CLOCK_SOURCE_IDX1           DRV_TMR_CLKSOURCE_INTERNAL
-#define DRV_TMR_PRESCALE_IDX1               TMR_PRESCALE_VALUE_2
+#define DRV_TMR_PRESCALE_IDX1               TMR_PRESCALE_VALUE_1
 #define DRV_TMR_OPERATION_MODE_IDX1         DRV_TMR_OPERATION_MODE_16_BIT
 
 #define DRV_TMR_ASYNC_WRITE_ENABLE_IDX1     false
@@ -259,10 +263,8 @@ extern "C" {
 
 
 /*** Application Instance 0 Configuration ***/
-/*** Application Instance 0 Configuration ***/
-/* Tick time in 1msec units */
-
-/*** Application Instance 1 Configuration ***/
+#define APP_USB_SWITCH_DEBOUNCE_COUNT_FS (260)
+#define APP_USB_SWITCH_DEBOUNCE_COUNT_HS (260)
 
 /* Application USB Device CDC Read Buffer Size. This should be a multiple of
  * the CDC Bulk Endpoint size */
@@ -284,10 +286,10 @@ extern "C" {
 /* Macros defines board specific led */
 
 #define APP_USB_LED_3    BSP_LED_3
-
-/* Macros defines board specific switch */
-
-#define APP_USB_SWITCH_1    BSP_SWITCH_1
+    
+    
+#define APP_USB_SWITCH_1    BSP_SWITCH_1    
+    
 //DOM-IGNORE-BEGIN
 #ifdef __cplusplus
 }
