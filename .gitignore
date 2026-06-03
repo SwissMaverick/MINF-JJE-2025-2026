@@ -26,3 +26,10 @@ TP4_USBGen/firmware/TP4_USBGen_V01.X/dist
 TP4_USBGen/firmware/TP4_USBGen_V01.X/queuelogs
 TP4_USBGen/firmware/TP4_USBGen_V01.X/*.inx
 TP4_USBGen/firmware/TP4_USBGen_V01.X/*.log
+
+tcpip_tcp_server_TP5_IPGen/firmware/tcpip_tcp_server_TP5_IpGen.X/build
+tcpip_tcp_server_TP5_IPGen/firmware/tcpip_tcp_server_TP5_IpGen.X/debug
+tcpip_tcp_server_TP5_IPGen/firmware/tcpip_tcp_server_TP5_IpGen.X/dist
+tcpip_tcp_server_TP5_IPGen/firmware/tcpip_tcp_server_TP5_IpGen.X/queuelogs
+tcpip_tcp_server_TP5_IPGen/firmware/tcpip_tcp_server_TP5_IpGen.X/*.inx
+tcpip_tcp_server_TP5_IPGen/firmware/tcpip_tcp_server_TP5_IpGen.X/*.log
