@@ -270,7 +270,7 @@ void APP_Tasks ( void )
                 // Transfer the data out of the TCP RX FIFO and into our local processing buffer.
                 TCPIP_TCP_ArrayGet(appData.socket, AppBuffer, wCurrentChunk);                                             
                 
-                /********************************************************************************************  <---  GET */
+                /*******************************************************************************************  <---  GET */
 
 //                
                 
