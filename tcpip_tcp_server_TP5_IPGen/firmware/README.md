@@ -5,7 +5,7 @@ lcd_gotoxy(1,4);
 printf_lcd("IP:%03d.%03d.%03d.%03d", ipAddr.v[0], ipAddr.v[1], ipAddr.v[2], ipAddr.v[3]);
 ```
 Affichage de l'adresse IP lorsque celle-ci change  
-
+  
 ## Modification 2  
 ```C
 // Perform the operation on each data byte
@@ -54,7 +54,7 @@ Exemple :
 !S=TF=2000A=10000O=+5000WP=0# 
 ```  
 Si l'utilisateur appuie sur "Esc", la connection s'interromp.
-    
+  
 ## Modification 3  
 ```C
 // Transfer the data out of our local processing buffer and into the TCP TX FIFO.
