@@ -8,5 +8,6 @@ TP3 : Fonctionnel et partiellement terminé. La partie de sauvegarde des valeurs
 TP4 : Fonctionnel et terminé. Le code entier se trouve dans le dossier TP4-USBGen. L'app C# se trouve dans le dossier App_MINF_UsbGen_JJE.  
 **Attention** : Pour mon app C#, j'ai installé une bibliothèque graphique afin de rendre l'app plus jolie. Il suffit juste sur VS d'aller dans **Outils** -> **Gestionnaire de packages NuGet** > **Gérer les packages NuGet pour la solution...** et d'installer `MaterialSkin.2`.  
 TP4 Exemple : Exemple d'un code fonctionnant avec l'USB  
+TP5 : Fonctionnel et terminé. La seule petite modification à apporter serait la gestion des signes "-" dans l'envoi de la trame. Le programme accepte d'afficher une fréquence ainsi qu'une amplitude négative !
 
 PS : Etant donné que ce repo contient plusieurs TP, merci de mettre des labels TP0, TP1, etc pour les issues des TP correspondants. Les labels ont déjà été créés, il ne reste plus qu'à les assigner aux issues.
