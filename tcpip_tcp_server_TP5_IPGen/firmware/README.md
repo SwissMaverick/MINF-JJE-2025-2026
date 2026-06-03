@@ -1,12 +1,12 @@
 # Changements éffectués dans app.c
-## Ajout 1  
+## Modification 1  
 ```C
 lcd_gotoxy(1,4);
 printf_lcd("IP:%03d.%03d.%03d.%03d", ipAddr.v[0], ipAddr.v[1], ipAddr.v[2], ipAddr.v[3]);
 ```
 Affichage de l'adresse IP lorsque celle-ci change  
 
-## Ajout 2  
+## Modification 2  
 ```C
 // Perform the operation on each data byte
 for(w2 = 0; w2 < wCurrentChunk; w2++)
@@ -47,3 +47,11 @@ for(w2 = 0; w2 < wCurrentChunk; w2++)
     }
 }
 ```
+  
+## Modification 3  
+```C
+// Transfer the data out of our local processing buffer and into the TCP TX FIFO.
+SYS_CONSOLE_PRINT("Server Sending %s\r\n", AppBuffer);
+TCPIP_TCP_ArrayPut(appData.socket, AppBuffer, wCurrentChunk);
+```
+Enlèvement de ces lignes
