@@ -1,1 +1,1 @@
-#Changements éffectués dans app_gen.c
+# Changements éffectués dans app_gen.c
