@@ -49,7 +49,10 @@ for(w2 = 0; w2 < wCurrentChunk; w2++)
 ```
 Réception du début de la trame par le caractère "!". Réception de la trame entière par "GetMessage".  Enregistrement des paramètres ainsi que gestion du mode de sauvegarde dans l'EEPROM.  
 À la fin de la réception du message, renvoi de la trame au client en ajoutant la lettre "P" dans la trame.  
-Exemple : ```C !S=TF=2000A=10000O=+5000WP=0# ```  
+Exemple : 
+```C
+!S=TF=2000A=10000O=+5000WP=0# 
+```  
 Si l'utilisateur appuie sur "Esc", la connection s'interromp.
     
 ## Modification 3  
