@@ -84,6 +84,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 APP_DATA appData;
 S_ParamGen paramGen;
+IPV4_ADDR  ipAddrAff;
 
 // *****************************************************************************
 // *****************************************************************************
@@ -204,8 +205,9 @@ void APP_Tasks ( void )
                     SYS_CONSOLE_MESSAGE(" IP Address: ");
                     SYS_CONSOLE_PRINT("%d.%d.%d.%d \r\n", ipAddr.v[0], ipAddr.v[1], ipAddr.v[2], ipAddr.v[3]);
                     //ajout
-                    lcd_gotoxy(1,4);
-                    printf_lcd("IP:%03d.%03d.%03d.%03d", ipAddr.v[0], ipAddr.v[1], ipAddr.v[2], ipAddr.v[3]);
+//                    lcd_gotoxy(1,4);
+//                    printf_lcd("IP:%03d.%03d.%03d.%03d", ipAddr.v[0], ipAddr.v[1], ipAddr.v[2], ipAddr.v[3]);
+                    ipAddrAff = ipAddr;
                 }
                 appData.state = APP_TCPIP_OPENING_SERVER;
             }
@@ -270,7 +272,7 @@ void APP_Tasks ( void )
                 // Transfer the data out of the TCP RX FIFO and into our local processing buffer.
                 TCPIP_TCP_ArrayGet(appData.socket, AppBuffer, wCurrentChunk);                                             
                 
-                /*******************************************************************************************  <---  GET */
+                /********************************************************************************************  <---  GET */
 
 //                
                 
@@ -344,6 +346,16 @@ bool APP_GetTCP_Status(void)
        return false; 
     }
     
+}
+
+void APP_AffIP(void)
+{
+    lcd_ClearLine(1);
+    lcd_gotoxy(1,2);
+    printf_lcd("    Adresse IPV4    ");
+    lcd_gotoxy(1,3);
+    printf_lcd(" IP:%03d.%03d.%03d.%03d ", ipAddrAff.v[0], ipAddrAff.v[1], ipAddrAff.v[2], ipAddrAff.v[3]);
+    lcd_ClearLine(4);
 }
 
 /*******************************************************************************

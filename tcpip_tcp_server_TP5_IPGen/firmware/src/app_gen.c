@@ -230,34 +230,40 @@ void APP_GEN_Tasks ( void )
             }
             else
             {
-                app_genData.infoTCP = APP_GetTCP_Status(); // lecture pin detection pour mise a jour de infoUsb
+                app_genData.infoTCP = APP_GetTCP_Status(); 
             }          
             
-            
-            // Execution du menu
-            if(app_genData.infoTCP)
+            if(PORTGbits.RG13) //gestion affichage adresse IP
             {
-                MENU_Execute(&RemoteParamGen,(bool)!app_genData.infoTCP);  // inversion de la logique de détection            
+                // Execution du menu
+                if(app_genData.infoTCP)
+                {
+                    MENU_Execute(&RemoteParamGen,(bool)!app_genData.infoTCP);  // inversion de la logique de détection            
+                }
+                else
+                {
+                    MENU_Execute(&LocalParamGen,(bool)!app_genData.infoTCP);  // inversion de la logique de détection   
+                }
+
+                if (app_genData.demandeSave == true )
+                {
+                    MENU_Save(&RemoteParamGen);
+
+                    app_genData.demandeSave = false;
+                }
+
+                if (app_genData.demandeUpdate == true )
+                {
+                    // mise a jour du signal selon parametre remote
+                    GENSIG_UpdateSignal(&RemoteParamGen);
+                    GENSIG_UpdatePeriode(&RemoteParamGen);
+
+                    app_genData.demandeUpdate = false;
+                }
             }
-            else
+            else // affichage de l'adresse IP
             {
-                MENU_Execute(&LocalParamGen,(bool)!app_genData.infoTCP);  // inversion de la logique de détection   
-            }
-            
-            if (app_genData.demandeSave == true )
-            {
-                MENU_Save(&RemoteParamGen);
-                
-                app_genData.demandeSave = false;
-            }
-                
-            if (app_genData.demandeUpdate == true )
-            {
-                // mise a jour du signal selon parametre remote
-                GENSIG_UpdateSignal(&RemoteParamGen);
-                GENSIG_UpdatePeriode(&RemoteParamGen);
-                
-                app_genData.demandeUpdate = false;
+                APP_AffIP();
             }
             
             //MENU_Execute(&LocalParamGen);
@@ -280,10 +286,15 @@ void APP_GEN_Tasks ( void )
 
 void APP_GEN_SetParam (S_ParamGen* pParam)
 {
-    RemoteParamGen.Forme = pParam->Forme;
-    RemoteParamGen.Frequence = pParam->Frequence;
-    RemoteParamGen.Amplitude = pParam->Amplitude;
-    RemoteParamGen.Offset = pParam->Offset;
+    
+    if((pParam->Forme <= NUMCARRE ) && (pParam->Forme >= NUMSINUS ))
+        RemoteParamGen.Forme = pParam->Forme;
+    if((pParam->Frequence <= FREQ_MAX ) && (pParam->Frequence >= FREQ_MIN ))
+        RemoteParamGen.Frequence = pParam->Frequence;
+    if((pParam->Amplitude <= AMP_MAX ) && (pParam->Amplitude >= AMP_MIN ))
+        RemoteParamGen.Amplitude = pParam->Amplitude;
+    if((pParam->Offset <= OFFSET_MAX ) && (pParam->Offset >= OFFSET_MIN ))
+        RemoteParamGen.Offset = pParam->Offset;
 }
 
 void APP_GEN_GetParam (S_ParamGen* pParam)

@@ -16,9 +16,10 @@ char check;
 // Fonction de reception  d'un  message
 // Met à jour les paramètres du generateur a partir du message recu
 // Format du message
-//  !S=TF=2000A=10000O=+5000D=100W=0#
-//  !S=DF=2000A=10000O=-5000D=100W=1#
-
+//  !S=TF=2000A=10000O=+5000W=0#
+//  !S=DF=2000A=10000O=-5000W=1#
+//  !S=TF=-2000A=-10000O=-5000W=0#
+//  !S=AF=-2000A=10000O=-5000W=0#
 
 bool GetMessage(int8_t *USBReadBuffer, S_ParamGen *pParam, bool *SaveTodo)
 { 

@@ -1548,6 +1548,7 @@
         <Name dnOrder="0">system_interrupt.c</Name>
         <Path dnOrder="1">Source&amp;#160;Files/app/system_config/pic32mx_eth_sk2</Path>
         <Checksum dnOrder="2">CADA31763E487B46FB15FBE16B946437</Checksum>
+        <ProjectFileChecksum dnOrder="3">BFF1D939B16DD8EDFA8FCFB0B0453383</ProjectFileChecksum>
       </Template>
       <Template dnOrder="14">
         <Name dnOrder="0">sys_ports_static.c</Name>
@@ -1566,7 +1567,7 @@
       <Template dnOrder="17">
         <Name dnOrder="0">system_config.h</Name>
         <Path dnOrder="1">Header&amp;#160;Files/app/system_config/pic32mx_eth_sk2</Path>
-        <Checksum dnOrder="2">E3C0DB7CA49768C133744E4115FEA0B3</Checksum>
+        <Checksum dnOrder="2">FBDB01CE63453F12C0A77DC90F65CEAC</Checksum>
       </Template>
     </Templates>
     <CompilerItems dnOrder="2">

@@ -209,6 +209,8 @@ void APP_Tasks ( void );
 
 bool APP_GetTCP_Status(void);
 
+void APP_AffIP(void);
+
 #endif /* _APP_H */
 /*******************************************************************************
  End of File
